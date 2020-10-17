@@ -2,6 +2,9 @@
 
 ## Define class templates to generate files.
 
+### Installation
+`composer require tsquare/class-generator`
+
 ### Usage:
 
 * Create a template file e.g., ./stubs/Example.php

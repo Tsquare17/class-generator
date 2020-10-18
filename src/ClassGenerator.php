@@ -57,7 +57,7 @@ class ClassGenerator
     public function getClassName(): void
     {
         if ($rule = $this->template->getNameRule()) {
-            $this->className = str_replace('{}', $this->template->getName(), $rule);
+            $this->className = $this->fillPlaceholders($rule);
             return;
         }
 
@@ -80,7 +80,7 @@ class ClassGenerator
                 $name = $this->template->getName();
             }
 
-            $path .= '/' . str_replace(['{}', '{s}'], [$name, $name . 's'], $rule['path']);
+            $path .= '/' . $this->fillPlaceholders($rule['path']);
         }
 
         if (!is_dir($path)) {
@@ -114,7 +114,7 @@ class ClassGenerator
     {
         $contents = '<?php' . self::DOUBLE_EOL . $this->classNamespace . self::DOUBLE_EOL;
 
-        $contents .= $this->template->getHeader() . self::DOUBLE_EOL;
+        $contents .= $this->fillPlaceholders($this->template->getHeader()) . self::DOUBLE_EOL;
 
         $contents .= 'class ' . $this->className;
 
@@ -126,11 +126,11 @@ class ClassGenerator
             $contents .= ' implements ' . $implements;
         }
 
-        $contents .= PHP_EOL . '{' . PHP_EOL;
+        $contents .= PHP_EOL . '{';
 
-        $contents .= $this->template->getBody();
+        $contents .= $this->fillPlaceholders($this->template->getBody());
 
-        $contents .= PHP_EOL . '}' . PHP_EOL;
+        $contents .= '}' . PHP_EOL;
 
         $this->classFileContents = $contents;
     }
@@ -160,7 +160,11 @@ class ClassGenerator
 
         $currentPath = $basePath;
         foreach ($pathArray as $dir) {
-            if (! mkdir($concurrentDirectory = $currentPath . '/' . $dir) && ! is_dir($concurrentDirectory)) {
+            if (
+                !is_dir($currentPath . '/' . $dir)
+                 && ! mkdir($concurrentDirectory = $currentPath . '/' . $dir)
+                 && ! is_dir($concurrentDirectory)
+            ) {
                 throw new \RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
             }
 
@@ -178,5 +182,25 @@ class ClassGenerator
     public function getClassPathString(): string
     {
         return $this->classPath . '/' . $this->className . '.php';
+    }
+
+    /**
+     * Replace placeholders with a value.
+     *
+     * @param string $string
+     *
+     * @return string
+     */
+    public function fillPlaceholders(string $string): string
+    {
+        $name = $this->template->getName();
+        $camel = lcfirst($name);
+        $pascal = ucfirst($name);
+
+        return str_replace(
+            ['{class}', '{plural}', '{camel}', '{pascal}', '{camels}', '{pascals}'],
+            [$name, $name . 's', $camel, $pascal, $camel . 's', $pascal . 's'],
+            $string
+        );
     }
 }

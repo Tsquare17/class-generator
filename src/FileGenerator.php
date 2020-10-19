@@ -1,27 +1,28 @@
 <?php
 
-namespace Tsquare\ClassGenerator;
+namespace Tsquare\FileGenerator;
 
 /**
- * Class ClassGenerator
- * @package Tsquare\ClassGenerator
+ * Class FileGenerator
+ * @package Tsquare\FileGenerator
  */
-class ClassGenerator
+class FileGenerator
 {
-    protected ClassTemplate $template;
+    protected Template $template;
+    protected ?string $fileName;
     protected string $className;
-    protected string $classNamespace;
-    protected string $classPath;
-    protected string $classFileContents;
+    protected string $namespace;
+    protected string $path;
+    protected string $fileContents;
 
     protected const DOUBLE_EOL = PHP_EOL . PHP_EOL;
 
     /**
-     * ClassGenerator constructor.
+     * FileGenerator constructor.
      *
-     * @param ClassTemplate $template
+     * @param Template $template
      */
-    public function __construct(ClassTemplate $template)
+    public function __construct(Template $template)
     {
         $this->template = $template;
     }
@@ -33,22 +34,30 @@ class ClassGenerator
      */
     public function create(): bool
     {
-        // get the name of the class to use
+        // Get the name of the file.
+        $this->getFileName();
+
+        // Get the name of the class to use.
         $this->getClassName();
 
-        // get the path the class should go
-        $this->getClassPath();
+        // Get the path the file should go.
+        $this->getPath();
 
-        // get the namespace
-        $this->getClassNamespace();
+        // Get the namespace.
+        $this->getNamespace();
 
-        // assemble the contents of the class
-        $this->assembleClassContents();
+        // Assemble the contents of the file.
+        $this->assembleContents();
 
-        // create the file and any missing directories
-        $this->generateClassFile();
+        // Create the file and any missing directories.
+        $this->generateFile();
 
         return true;
+    }
+
+    public function getFileName(): void
+    {
+        $this->fileName = $this->template->getFileName();
     }
 
     /**
@@ -61,25 +70,19 @@ class ClassGenerator
             return;
         }
 
-        $this->className = $this->template->getName();
+        $this->className = $this->template->getClassName();
     }
 
     /**
-     * Get the class path.
+     * Get the file path.
      *
      * @return bool
      */
-    public function getClassPath(): bool
+    public function getPath(): bool
     {
         $path = $this->template->getPath();
 
         if ($rule = $this->template->getPathRule()) {
-            if ($rule['usesClassNameRule']) {
-                $name = $this->className;
-            } else {
-                $name = $this->template->getName();
-            }
-
             $path .= '/' . $this->fillPlaceholders($rule['path']);
         }
 
@@ -87,32 +90,37 @@ class ClassGenerator
             $this->createPath($path);
         }
 
-        $this->classPath = $path;
+        $this->path = $path;
 
         return true;
     }
 
     /**
-     * Get the class namespace.
+     * Get the namespace.
      */
-    public function getClassNamespace(): void
+    public function getNamespace(): void
     {
         if ($namespace = $this->template->getNamespace()) {
-            $this->classNamespace = 'namespace ' . $namespace . ';';
+            $this->namespace = 'namespace ' . $namespace . ';';
             return;
         }
 
-        $path = str_replace($this->template->getAppDir(), '', $this->classPath) . ';';
+        $path = str_replace($this->template->getAppDir(), '', $this->path) . ';';
 
-        $this->classNamespace = 'namespace ' . substr(str_replace('/', '\\', $path), 1);
+        $this->namespace = 'namespace ' . substr(str_replace('/', '\\', $path), 1);
     }
 
     /**
      * Put together the contents of the file.
      */
-    public function assembleClassContents(): void
+    public function assembleContents(): void
     {
-        $contents = '<?php' . self::DOUBLE_EOL . $this->classNamespace . self::DOUBLE_EOL;
+        if ($content = $this->template->getFileContent()) {
+            $this->fileContents = $this->fillPlaceholders($content);
+            return;
+        }
+
+        $contents = '<?php' . self::DOUBLE_EOL . $this->namespace . self::DOUBLE_EOL;
 
         $contents .= $this->fillPlaceholders($this->template->getHeader()) . self::DOUBLE_EOL;
 
@@ -132,7 +140,7 @@ class ClassGenerator
 
         $contents .= '}' . PHP_EOL;
 
-        $this->classFileContents = $contents;
+        $this->fileContents = $contents;
     }
 
     /**
@@ -140,9 +148,11 @@ class ClassGenerator
      *
      * @return bool
      */
-    public function generateClassFile(): bool
+    public function generateFile(): bool
     {
-        return file_put_contents($this->classPath . '/' . $this->className . '.php', $this->classFileContents);
+        $fileName = $this->fileName ?: $this->className;
+
+        return file_put_contents($this->path . '/' . $fileName . '.php', $this->fileContents);
     }
 
     /**
@@ -175,13 +185,13 @@ class ClassGenerator
     }
 
     /**
-     * Get the absolute path of the class file.
+     * Get the absolute path of the file.
      *
      * @return string
      */
-    public function getClassPathString(): string
+    public function getPathString(): string
     {
-        return $this->classPath . '/' . $this->className . '.php';
+        return $this->path . '/' . ($this->fileName ?: $this->className) . '.php';
     }
 
     /**
@@ -193,14 +203,35 @@ class ClassGenerator
      */
     public function fillPlaceholders(string $string): string
     {
-        $name = $this->template->getName();
+        $name = $this->template->getClassName();
         $camel = lcfirst($name);
         $pascal = ucfirst($name);
+        $underscore = self::pascalTo($name, '_');
+        $dashed = self::pascalTo($name, '-');
 
         return str_replace(
-            ['{class}', '{plural}', '{camel}', '{pascal}', '{camels}', '{pascals}'],
-            [$name, $name . 's', $camel, $pascal, $camel . 's', $pascal . 's'],
+            ['{name}', '{camel}', '{pascal}', '{underscore}', '{dash}'],
+            [$name, $camel, $pascal, $underscore, $dashed],
             $string
         );
+    }
+
+    /**
+     * Take a string in PascalCase and return it in lower case, split with the provided glue.
+     *
+     * @param string $string
+     * @param string $glue
+     *
+     * @return string
+     */
+    public static function pascalTo(string $string, string $glue): string
+    {
+        preg_match_all('!([A-Z][A-Z0-9]*(?=$|[A-Z][a-z0-9])|[A-Za-z][a-z0-9]+)!', $string, $matches);
+
+        foreach ($matches[0] as &$match) {
+            $match = ($match === strtoupper($match)) ? strtolower($match) : lcfirst($match);
+        }
+
+        return implode($glue, $matches[0]);
     }
 }

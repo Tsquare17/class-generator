@@ -1,13 +1,15 @@
 <?php
 
-namespace Tsquare\ClassGenerator;
+namespace Tsquare\FileGenerator;
 
 /**
- * Class ClassTemplate
- * @package Tsquare\ClassGenerator
+ * Class FileTemplate
+ * @package Tsquare\FileGenerator
  */
-class ClassTemplate
+class FileTemplate implements Template
 {
+    protected ?string $fileName;
+    protected ?string $fileContent;
     protected string $className;
     protected ?string $classNameRule = null;
     protected ?string $classNamespace = null;
@@ -20,13 +22,13 @@ class ClassTemplate
     protected string $body;
 
     /**
-     * Initialize ClassTemplate, pulling in the specified template file.
+     * Initialize FileTemplate, pulling in the specified template file.
      *
      * @param string $file
      *
-     * @return ClassTemplate
+     * @return FileTemplate
      */
-    public static function init(string $file): ClassTemplate
+    public static function init(string $file): FileTemplate
     {
         $template = new static();
 
@@ -38,13 +40,37 @@ class ClassTemplate
     }
 
     /**
+     * Set the file name.
+     *
+     * @param string $fileName
+     *
+     * @return FileTemplate
+     */
+    public function fileName(string $fileName): FileTemplate
+    {
+        $this->fileName = $fileName;
+
+        return $this;
+    }
+
+    /**
+     * Get the file name.
+     *
+     * @return string|null
+     */
+    public function getFileName(): ?string
+    {
+        return $this->fileName;
+    }
+
+    /**
      * Set the class name.
      *
      * @param string $className
      *
-     * @return $this
+     * @return FileTemplate
      */
-    public function name(string $className): ClassTemplate
+    public function className(string $className): FileTemplate
     {
         $this->className = $className;
 
@@ -56,7 +82,7 @@ class ClassTemplate
      *
      * @return string
      */
-    public function getName(): string
+    public function getClassName(): string
     {
         return $this->className;
     }
@@ -66,9 +92,9 @@ class ClassTemplate
      *
      * @param string $nameRule
      *
-     * @return $this
+     * @return FileTemplate
      */
-    public function nameRule(string $nameRule): ClassTemplate
+    public function nameRule(string $nameRule): FileTemplate
     {
         $this->classNameRule = $nameRule;
 
@@ -90,9 +116,9 @@ class ClassTemplate
      *
      * @param string $namespace
      *
-     * @return $this
+     * @return FileTemplate
      */
-    public function namespace(string $namespace): ClassTemplate
+    public function namespace(string $namespace): FileTemplate
     {
         $this->classNamespace = $namespace;
 
@@ -114,9 +140,9 @@ class ClassTemplate
      *
      * @param string $extendedClass
      *
-     * @return $this
+     * @return FileTemplate
      */
-    public function extends(string $extendedClass): ClassTemplate
+    public function extends(string $extendedClass): FileTemplate
     {
         $this->extends = $extendedClass;
 
@@ -138,9 +164,9 @@ class ClassTemplate
      *
      * @param string $implementsClass
      *
-     * @return $this
+     * @return FileTemplate
      */
-    public function implements(string $implementsClass): ClassTemplate
+    public function implements(string $implementsClass): FileTemplate
     {
         $this->implements = $implementsClass;
 
@@ -162,9 +188,9 @@ class ClassTemplate
      *
      * @param string $path
      *
-     * @return $this
+     * @return FileTemplate
      */
-    public function appDir(string $path): ClassTemplate
+    public function appDir(string $path): FileTemplate
     {
         $this->appDir = $path;
 
@@ -186,9 +212,9 @@ class ClassTemplate
      *
      * @param string $path
      *
-     * @return $this
+     * @return FileTemplate
      */
-    public function path(string $path): ClassTemplate
+    public function path(string $path): FileTemplate
     {
         $this->path = $path;
 
@@ -211,9 +237,9 @@ class ClassTemplate
      * @param string $pathRule
      * @param false  $usesClassNameRule
      *
-     * @return $this
+     * @return FileTemplate
      */
-    public function pathRule(string $pathRule, $usesClassNameRule = false): ClassTemplate
+    public function pathRule(string $pathRule, $usesClassNameRule = false): FileTemplate
     {
         $this->pathRule = [
             'path' => $pathRule,
@@ -238,9 +264,9 @@ class ClassTemplate
      *
      * @param string $classHeader
      *
-     * @return $this
+     * @return FileTemplate
      */
-    public function header(string $classHeader): ClassTemplate
+    public function header(string $classHeader): FileTemplate
     {
         $this->header = $classHeader;
 
@@ -262,9 +288,9 @@ class ClassTemplate
      *
      * @param string $classBody
      *
-     * @return $this
+     * @return FileTemplate
      */
-    public function body(string $classBody): ClassTemplate
+    public function body(string $classBody): FileTemplate
     {
         $this->body = $classBody;
 
@@ -279,5 +305,29 @@ class ClassTemplate
     public function getBody(): string
     {
         return $this->body;
+    }
+
+    /**
+     * Set the file content.
+     *
+     * @param string $fileContent
+     *
+     * @return FileTemplate
+     */
+    public function fileContent(string $fileContent): FileTemplate
+    {
+        $this->fileContent = $fileContent;
+
+        return $this;
+    }
+
+    /**
+     * Get the file content.
+     *
+     * @return string|null
+     */
+    public function getFileContent(): ?string
+    {
+        return $this->fileContent;
     }
 }

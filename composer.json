@@ -1,6 +1,6 @@
 {
-    "name": "tsquare/class-generator",
-    "description": "Generate class files.",
+    "name": "tsquare/file-generator",
+    "description": "Generate files from template config files.",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -11,7 +11,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "Tsquare\\ClassGenerator\\": "src/"
+            "Tsquare\\FileGenerator\\": "src/"
         }
     },
     "require": {

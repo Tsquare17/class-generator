@@ -77,16 +77,9 @@ $template->body('
         $this->{camel}Model->insert($data);
     }
 ');
-
-/**
- * To create non-class files, or classes using a single template block, set the file contents.
- */
-$template->fileContent('
-$foo = {name};
-');
 ```
 
-* Alternatively, you can specify the file name, and it's complete contents.
+* Alternatively, create non-class files, or classes using a single template block.
 ```php
 <?php
 

@@ -116,7 +116,7 @@ class FileGenerator
     public function assembleContents(): void
     {
         if ($content = $this->template->getFileContent()) {
-            $this->fileContents = $this->fillPlaceholders($content);
+            $this->fileContents = '<?php' . self::DOUBLE_EOL . $this->fillPlaceholders($content);
             return;
         }
 

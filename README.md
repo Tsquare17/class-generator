@@ -7,7 +7,7 @@
 
 ### Usage:
 
-* Create a template file e.g., ./template-config/Example.php
+##### Create a template file e.g., ./template-config/Example.php
 ```php
 <?php
 
@@ -79,7 +79,7 @@ $template->body('
 ');
 ```
 
-* Alternatively, create non-class files, or classes using a single template block.
+##### Alternatively, create non-class files, or classes using a single template block.
 ```php
 <?php
 
@@ -119,7 +119,7 @@ $bar = \'{dash}\';
 ');
 ```
 
-* Initialize FileTemplate with the path to the template file, pass it to FileGenerator, and call create.
+##### Initialize FileTemplate with the path to the template file, pass it to FileGenerator, and call create.
 ```php
 <?php
 
@@ -133,7 +133,7 @@ $generator = new FileGenerator($template);
 $generator->create();
 ```
 
-* The following template replace tokens are available.
+##### The following template replace tokens are available.
 ```
 {name}       : ExampleName
 {camel}      : exampleName

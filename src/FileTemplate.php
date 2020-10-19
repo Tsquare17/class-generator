@@ -9,32 +9,23 @@ namespace Tsquare\FileGenerator;
 class FileTemplate implements Template
 {
     protected ?string $fileName;
-    protected ?string $fileContent;
-    protected string $className;
-    protected ?string $classNameRule = null;
-    protected ?string $classNamespace = null;
-    protected ?string $extends = null;
-    protected ?string $implements = null;
-    protected string $appDir;
-    protected string $path;
-    protected ?array $pathRule;
-    protected string $header;
-    protected string $body;
+    protected string $name;
+    protected string $appBasePath;
+    protected string $destinationPath;
+    protected string $fileContent;
 
     /**
      * Initialize FileTemplate, pulling in the specified template file.
      *
-     * @param string $file
+     * @param string $templateFile
      *
      * @return FileTemplate
      */
-    public static function init(string $file): FileTemplate
+    public static function init(string $templateFile): FileTemplate
     {
         $template = new static();
 
-        $template->className = str_replace('.php', '', strrev(explode('/', strrev($file))[0]));
-
-        require $file;
+        require $templateFile;
 
         return $template;
     }
@@ -64,123 +55,27 @@ class FileTemplate implements Template
     }
 
     /**
-     * Set the class name.
+     * Set the name.
      *
-     * @param string $className
+     * @param string $name
      *
      * @return FileTemplate
      */
-    public function className(string $className): FileTemplate
+    public function name(string $name): FileTemplate
     {
-        $this->className = $className;
+        $this->name = $name;
 
         return $this;
     }
 
     /**
-     * Get the class name.
+     * Get the name.
      *
      * @return string
      */
-    public function getClassName(): string
+    public function getName(): string
     {
-        return $this->className;
-    }
-
-    /**
-     * Set a modification rule for the generated class name.
-     *
-     * @param string $nameRule
-     *
-     * @return FileTemplate
-     */
-    public function nameRule(string $nameRule): FileTemplate
-    {
-        $this->classNameRule = $nameRule;
-
-        return $this;
-    }
-
-    /**
-     * Get the name modification rule.
-     *
-     * @return string|null
-     */
-    public function getNameRule(): ?string
-    {
-        return $this->classNameRule;
-    }
-
-    /**
-     * Set the class namespace.
-     *
-     * @param string $namespace
-     *
-     * @return FileTemplate
-     */
-    public function namespace(string $namespace): FileTemplate
-    {
-        $this->classNamespace = $namespace;
-
-        return $this;
-    }
-
-    /**
-     * Get the class namespace.
-     *
-     * @return string|null
-     */
-    public function getNamespace(): ?string
-    {
-        return $this->classNamespace;
-    }
-
-    /**
-     * Set a parent class to extend.
-     *
-     * @param string $extendedClass
-     *
-     * @return FileTemplate
-     */
-    public function extends(string $extendedClass): FileTemplate
-    {
-        $this->extends = $extendedClass;
-
-        return $this;
-    }
-
-    /**
-     * Get the extended parent class.
-     *
-     * @return string|null
-     */
-    public function getExtends(): ?string
-    {
-        return $this->extends;
-    }
-
-    /**
-     * Set an implementation class.
-     *
-     * @param string $implementsClass
-     *
-     * @return FileTemplate
-     */
-    public function implements(string $implementsClass): FileTemplate
-    {
-        $this->implements = $implementsClass;
-
-        return $this;
-    }
-
-    /**
-     * Get the implementation class.
-     *
-     * @return string|null
-     */
-    public function getImplements(): ?string
-    {
-        return $this->implements;
+        return $this->name;
     }
 
     /**
@@ -190,9 +85,9 @@ class FileTemplate implements Template
      *
      * @return FileTemplate
      */
-    public function appDir(string $path): FileTemplate
+    public function appBasePath(string $path): FileTemplate
     {
-        $this->appDir = $path;
+        $this->appBasePath = $path;
 
         return $this;
     }
@@ -202,109 +97,33 @@ class FileTemplate implements Template
      *
      * @return string
      */
-    public function getAppDir(): string
+    public function getAppBasePath(): string
     {
-        return $this->appDir;
+        return $this->appBasePath;
     }
 
     /**
-     * Set the path for the generated class file.
+     * Set the destination path for the generated file.
      *
      * @param string $path
      *
      * @return FileTemplate
      */
-    public function path(string $path): FileTemplate
+    public function destinationPath(string $path): FileTemplate
     {
-        $this->path = $path;
+        $this->destinationPath = $path;
 
         return $this;
     }
 
     /**
-     * Get the class file path.
+     * Get the destination file path.
      *
      * @return string
      */
-    public function getPath(): string
+    public function getDestinationPath(): string
     {
-        return $this->path;
-    }
-
-    /**
-     * Set a modification rule for the class path.
-     *
-     * @param string $pathRule
-     * @param false  $usesClassNameRule
-     *
-     * @return FileTemplate
-     */
-    public function pathRule(string $pathRule, $usesClassNameRule = false): FileTemplate
-    {
-        $this->pathRule = [
-            'path' => $pathRule,
-            'usesClassNameRule' => $usesClassNameRule,
-        ];
-
-        return $this;
-    }
-
-    /**
-     * Get the class path modification rule.
-     *
-     * @return array|null
-     */
-    public function getPathRule(): ?array
-    {
-        return isset($this->pathRule['path']) ? $this->pathRule : null;
-    }
-
-    /**
-     * Set the class header content.
-     *
-     * @param string $classHeader
-     *
-     * @return FileTemplate
-     */
-    public function header(string $classHeader): FileTemplate
-    {
-        $this->header = $classHeader;
-
-        return $this;
-    }
-
-    /**
-     * Get the class header content.
-     *
-     * @return string
-     */
-    public function getHeader(): string
-    {
-        return $this->header;
-    }
-
-    /**
-     * Set the class body content.
-     *
-     * @param string $classBody
-     *
-     * @return FileTemplate
-     */
-    public function body(string $classBody): FileTemplate
-    {
-        $this->body = $classBody;
-
-        return $this;
-    }
-
-    /**
-     * Get the class body content.
-     *
-     * @return string
-     */
-    public function getBody(): string
-    {
-        return $this->body;
+        return $this->destinationPath;
     }
 
     /**

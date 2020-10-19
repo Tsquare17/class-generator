@@ -10,12 +10,9 @@ class FileGenerator
 {
     protected Template $template;
     protected ?string $fileName;
-    protected string $className;
-    protected string $namespace;
+    protected string $name;
     protected string $path;
     protected string $fileContents;
-
-    protected const DOUBLE_EOL = PHP_EOL . PHP_EOL;
 
     /**
      * FileGenerator constructor.
@@ -37,40 +34,33 @@ class FileGenerator
         // Get the name of the file.
         $this->getFileName();
 
-        // Get the name of the class to use.
-        $this->getClassName();
+        // Get the name to use.
+        $this->getName();
 
         // Get the path the file should go.
         $this->getPath();
 
-        // Get the namespace.
-        $this->getNamespace();
+        // Set the contents of the file.
+        $this->setContents();
 
-        // Assemble the contents of the file.
-        $this->assembleContents();
-
-        // Create the file and any missing directories.
-        $this->generateFile();
-
-        return true;
-    }
-
-    public function getFileName(): void
-    {
-        $this->fileName = $this->template->getFileName();
+        // Create the file.
+        return $this->generateFile();
     }
 
     /**
-     * Get the class name.
+     * Get the name of the file.
      */
-    public function getClassName(): void
+    public function getFileName(): void
     {
-        if ($rule = $this->template->getNameRule()) {
-            $this->className = $this->fillPlaceholders($rule);
-            return;
-        }
+        $this->fileName = $this->fillPlaceholders($this->template->getFileName());
+    }
 
-        $this->className = $this->template->getClassName();
+    /**
+     * Get the name.
+     */
+    public function getName(): void
+    {
+        $this->name = $this->template->getName();
     }
 
     /**
@@ -80,11 +70,7 @@ class FileGenerator
      */
     public function getPath(): bool
     {
-        $path = $this->template->getPath();
-
-        if ($rule = $this->template->getPathRule()) {
-            $path .= '/' . $this->fillPlaceholders($rule['path']);
-        }
+        $path = $this->fillPlaceholders($this->template->getDestinationPath());
 
         if (!is_dir($path)) {
             $this->createPath($path);
@@ -96,51 +82,11 @@ class FileGenerator
     }
 
     /**
-     * Get the namespace.
+     * Set the contents of the file.
      */
-    public function getNamespace(): void
+    protected function setContents(): void
     {
-        if ($namespace = $this->template->getNamespace()) {
-            $this->namespace = 'namespace ' . $namespace . ';';
-            return;
-        }
-
-        $path = str_replace($this->template->getAppDir(), '', $this->path) . ';';
-
-        $this->namespace = 'namespace ' . substr(str_replace('/', '\\', $path), 1);
-    }
-
-    /**
-     * Put together the contents of the file.
-     */
-    public function assembleContents(): void
-    {
-        if ($content = $this->template->getFileContent()) {
-            $this->fileContents = '<?php' . self::DOUBLE_EOL . $this->fillPlaceholders($content);
-            return;
-        }
-
-        $contents = '<?php' . self::DOUBLE_EOL . $this->namespace . self::DOUBLE_EOL;
-
-        $contents .= $this->fillPlaceholders($this->template->getHeader()) . self::DOUBLE_EOL;
-
-        $contents .= 'class ' . $this->className;
-
-        if ($extends = $this->template->getExtends()) {
-            $contents .= ' extends ' . $extends;
-        }
-
-        if ($implements = $this->template->getImplements()) {
-            $contents .= ' implements ' . $implements;
-        }
-
-        $contents .= PHP_EOL . '{';
-
-        $contents .= $this->fillPlaceholders($this->template->getBody());
-
-        $contents .= '}' . PHP_EOL;
-
-        $this->fileContents = $contents;
+        $this->fileContents = '<?php' . PHP_EOL . $this->fillPlaceholders($this->template->getFileContent());
     }
 
     /**
@@ -148,11 +94,16 @@ class FileGenerator
      *
      * @return bool
      */
-    public function generateFile(): bool
+    protected function generateFile(): bool
     {
-        $fileName = $this->fileName ?: $this->className;
+        $fileName = $this->fileName ?: $this->name;
+        $filePath = $this->path . '/' . $fileName . '.php';
 
-        return file_put_contents($this->path . '/' . $fileName . '.php', $this->fileContents);
+        if (is_file($filePath)) {
+            return false;
+        }
+
+        return file_put_contents($filePath, $this->fileContents);
     }
 
     /**
@@ -162,9 +113,9 @@ class FileGenerator
      *
      * @return bool
      */
-    public function createPath(string $path): bool
+    protected function createPath(string $path): bool
     {
-        $basePath = $this->template->getAppDir();
+        $basePath = $this->template->getAppBasePath();
         $createPath = str_replace($basePath . '/', '', $path);
         $pathArray = explode('/', $createPath);
 
@@ -191,7 +142,7 @@ class FileGenerator
      */
     public function getPathString(): string
     {
-        return $this->path . '/' . ($this->fileName ?: $this->className) . '.php';
+        return $this->path . '/' . ($this->fileName ?: $this->name) . '.php';
     }
 
     /**
@@ -201,9 +152,9 @@ class FileGenerator
      *
      * @return string
      */
-    public function fillPlaceholders(string $string): string
+    protected function fillPlaceholders(string $string): string
     {
-        $name = $this->template->getClassName();
+        $name = $this->template->getName();
         $camel = lcfirst($name);
         $pascal = ucfirst($name);
         $underscore = self::pascalTo($name, '_');
@@ -224,7 +175,7 @@ class FileGenerator
      *
      * @return string
      */
-    public static function pascalTo(string $string, string $glue): string
+    protected static function pascalTo(string $string, string $glue): string
     {
         preg_match_all('!([A-Z][A-Z0-9]*(?=$|[A-Z][a-z0-9])|[A-Za-z][a-z0-9]+)!', $string, $matches);
 

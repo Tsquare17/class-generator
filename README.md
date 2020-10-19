@@ -114,8 +114,8 @@ $template->fileName('default');
 $template->fileContent('
 namespace App\Foo\{name};
 
-$foo = {underscore}s;
-$bar = {dash};
+$foo = \'{underscore}s\';
+$bar = \'{dash}\';
 ');
 ```
 

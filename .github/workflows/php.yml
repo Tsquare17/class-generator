@@ -15,5 +15,5 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-suggest
 
-      - name: Run code sniff
+      - name: Run code sniff and tests
         run: composer sniff && composer test

@@ -8,7 +8,7 @@ namespace Tsquare\FileGenerator;
  */
 class FileTemplate implements Template
 {
-    protected ?string $fileName;
+    protected ?string $fileName = null;
     protected string $name;
     protected string $appBasePath;
     protected string $destinationPath;

@@ -19,9 +19,12 @@
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.5",
-        "friendsofphp/php-cs-fixer": "^2.16"
+        "friendsofphp/php-cs-fixer": "^2.16",
+        "phpunit/phpunit": "^9.4"
     },
     "scripts": {
-        "sniff": "phpcs -p --colors --standard=phpcs.xml"
+        "sniff": "phpcs -p --colors --standard=phpcs.xml",
+        "check": "composer sniff && composer test",
+        "test": "vendor/bin/phpunit --colors=always --testsuite unit"
     }
 }

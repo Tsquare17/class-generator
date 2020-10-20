@@ -9,7 +9,7 @@ namespace Tsquare\FileGenerator;
 class FileGenerator
 {
     protected Template $template;
-    protected ?string $fileName;
+    protected ?string $fileName = null;
     protected string $name;
     protected string $path;
     protected string $fileContents;
@@ -52,7 +52,9 @@ class FileGenerator
      */
     public function getFileName(): void
     {
-        $this->fileName = $this->fillPlaceholders($this->template->getFileName());
+        if ($fileName = $this->template->getFileName()) {
+            $this->fileName = $this->fillPlaceholders($this->template->getFileName());
+        }
     }
 
     /**

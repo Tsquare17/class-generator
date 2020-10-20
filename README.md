@@ -39,7 +39,7 @@ $template->name('Example');
 /**
  * Define the file name. If not defined, name will be used.
  */
-$template->fileName('{name}Config');
+$template->fileName('{name}File');
 
 
 /**

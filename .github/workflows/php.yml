@@ -16,7 +16,4 @@ jobs:
         run: composer install --prefer-dist --no-progress --no-suggest
 
       - name: Run code sniff
-        run: composer sniff
-
-      - name: Run PHPUnit
-        run: composer test
+        run: composer sniff && composer test

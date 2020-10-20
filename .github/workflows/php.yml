@@ -1,4 +1,4 @@
-name: Code Sniff
+name: Sniff && Test
 
 on: [push]
 

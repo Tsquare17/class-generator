@@ -96,4 +96,22 @@ interface Template
      * @return string|null
      */
     public function getFileContent(): ?string;
+
+    /**
+     * Sets an Editor to use, in the event that the file already exists.
+     *
+     * @param Editor $editor
+     *
+     * @return FileTemplate
+     */
+    public function ifFileExists(Editor $editor): Template;
+
+    /**
+     * Run the Editor's file modifications.
+     *
+     * @param string $file
+     *
+     * @return bool
+     */
+    public function executeFileEdits(string $file): bool;
 }

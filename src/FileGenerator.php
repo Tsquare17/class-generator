@@ -2,6 +2,8 @@
 
 namespace Tsquare\FileGenerator;
 
+use Tsquare\FileGenerator\Utils\Strings;
+
 /**
  * Class FileGenerator
  * @package Tsquare\FileGenerator
@@ -53,7 +55,7 @@ class FileGenerator
     public function getFileName(): void
     {
         if ($fileName = $this->template->getFileName()) {
-            $this->fileName = $this->fillPlaceholders($this->template->getFileName());
+            $this->fileName = Strings::fillPlaceholders($this->template->getFileName(), $this->template->getName());
         }
     }
 
@@ -72,7 +74,7 @@ class FileGenerator
      */
     public function getPath(): bool
     {
-        $path = $this->fillPlaceholders($this->template->getDestinationPath());
+        $path = Strings::fillPlaceholders($this->template->getDestinationPath(), $this->template->getName());
 
         if (!is_dir($path)) {
             $this->createPath($path);
@@ -88,7 +90,12 @@ class FileGenerator
      */
     protected function setContents(): void
     {
-        $this->fileContents = '<?php' . PHP_EOL . $this->fillPlaceholders($this->template->getFileContent());
+        $this->fileContents = '<?php'
+                              . PHP_EOL
+                              . Strings::fillPlaceholders(
+                                  $this->template->getFileContent(),
+                                  $this->template->getName()
+                              );
     }
 
     /**
@@ -100,6 +107,10 @@ class FileGenerator
     {
         $fileName = $this->fileName ?: $this->name;
         $filePath = $this->path . '/' . $fileName . '.php';
+
+        if ($edited = $this->template->executeFileEdits($this->getPathString())) {
+            return $edited;
+        }
 
         if (is_file($filePath)) {
             return false;
@@ -145,46 +156,5 @@ class FileGenerator
     public function getPathString(): string
     {
         return $this->path . '/' . ($this->fileName ?: $this->name) . '.php';
-    }
-
-    /**
-     * Replace placeholders with a value.
-     *
-     * @param string $string
-     *
-     * @return string
-     */
-    protected function fillPlaceholders(string $string): string
-    {
-        $name = $this->template->getName();
-        $camel = lcfirst($name);
-        $pascal = ucfirst($name);
-        $underscore = self::pascalTo($name, '_');
-        $dashed = self::pascalTo($name, '-');
-
-        return str_replace(
-            ['{name}', '{camel}', '{pascal}', '{underscore}', '{dash}'],
-            [$name, $camel, $pascal, $underscore, $dashed],
-            $string
-        );
-    }
-
-    /**
-     * Take a string in PascalCase and return it in lower case, split with the provided glue.
-     *
-     * @param string $string
-     * @param string $glue
-     *
-     * @return string
-     */
-    protected static function pascalTo(string $string, string $glue): string
-    {
-        preg_match_all('!([A-Z][A-Z0-9]*(?=$|[A-Z][a-z0-9])|[A-Za-z][a-z0-9]+)!', $string, $matches);
-
-        foreach ($matches[0] as &$match) {
-            $match = ($match === strtoupper($match)) ? strtolower($match) : lcfirst($match);
-        }
-
-        return implode($glue, $matches[0]);
     }
 }

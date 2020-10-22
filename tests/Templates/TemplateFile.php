@@ -16,13 +16,19 @@ $template->appBasePath(dirname(__DIR__, 1));
 /**
  * Define the base path for the file.
  */
-$template->destinationPath(dirname(__DIR__, 1) . '/Fixtures/Destination');
+$template->destinationPath(dirname(__DIR__, 1) . '/Templates/Destination');
 
 
 /**
  * Define the name used to fill placeholders.
  */
 $template->name('TestFile');
+
+
+/**
+ * Define the file name. If not defined, name will be used.
+ */
+// $template->fileName('{name}');
 
 
 /**

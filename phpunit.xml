@@ -4,6 +4,7 @@
         <testsuite name="unit">
             <directory>tests</directory>
             <exclude>tests/Fixtures/</exclude>
+            <exclude>tests/Templates/</exclude>
         </testsuite>
     </testsuites>
 </phpunit>

@@ -10,25 +10,25 @@ class TemplateTest extends TestCase
 
     public function setUp(): void
     {
-        $template = FileTemplate::init(__DIR__ . '/Fixtures/TemplateFile.php');
+        $template = FileTemplate::init(__DIR__ . '/Templates/TemplateFile.php');
 
         $generator = new FileGenerator($template);
 
         $generator->create();
 
-        $this->fileContents = file_get_contents(__DIR__ . '/Fixtures/Destination/TestFile.php');
+        $this->fileContents = file_get_contents(__DIR__ . '/Templates/Destination/TestFile.php');
     }
 
     public function tearDown(): void
     {
-        unlink(__DIR__ . '/Fixtures/Destination/TestFile.php');
-        rmdir(__DIR__ . '/Fixtures/Destination');
+        unlink(__DIR__ . '/Templates/Destination/TestFile.php');
+        rmdir(__DIR__ . '/Templates/Destination');
     }
 
     /** @test */
     public function file_exists(): void
     {
-        $this->assertFileExists(__DIR__ . '/Fixtures/Destination/TestFile.php');
+        $this->assertFileExists(__DIR__ . '/Templates/Destination/TestFile.php');
     }
 
     /** @test */

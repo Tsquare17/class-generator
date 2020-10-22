@@ -16,22 +16,28 @@ $template->appBasePath(dirname(__DIR__, 1));
 /**
  * Define the base path for the file.
  */
-$template->destinationPath(dirname(__DIR__, 1) . '/Fixtures/Destination');
+$template->destinationPath(dirname(__DIR__, 1) . '/Fixtures');
 
 
 /**
  * Define the name used to fill placeholders.
  */
-$template->name('TestFile');
+$template->name('Foo');
 
 
 /**
  * Define the contents of the file.
  */
-$template->fileContent('
-$foo = \'{name}\';
-$bar = \'{camel}\';
-$baz = \'{pascal}\';
-$qux = \'{underscore}\';
-$quux = \'{dash}\';
-');
+$template->fileContent(
+    '
+namespace Fixtures;
+
+class {name}
+{
+    public function {underscore}(): {name}
+    {
+        return $this;
+    }
+}
+'
+);

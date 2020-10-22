@@ -13,6 +13,7 @@ class FileTemplate implements Template
     protected string $appBasePath;
     protected string $destinationPath;
     protected string $fileContent;
+    protected Editor $editor;
 
     /**
      * Initialize FileTemplate, pulling in the specified template file.
@@ -148,5 +149,38 @@ class FileTemplate implements Template
     public function getFileContent(): ?string
     {
         return $this->fileContent;
+    }
+
+    /**
+     * Sets an Editor to use, in the event that the file already exists.
+     *
+     * @param Editor $editor
+     *
+     * @return FileTemplate
+     */
+    public function ifFileExists(Editor $editor): FileTemplate
+    {
+        $this->editor = $editor;
+
+        return $this;
+    }
+
+    /**
+     * Run the Editor's file modifications.
+     *
+     * @param string $file
+     *
+     * @return bool
+     */
+    public function executeFileEdits(string $file): bool
+    {
+        if (!isset($this->editor)) {
+            return false;
+        }
+
+        $this->editor->file($file);
+
+
+        return $this->editor->execute($this->name);
     }
 }

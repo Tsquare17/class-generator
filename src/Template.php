@@ -114,4 +114,11 @@ interface Template
      * @return bool
      */
     public function executeFileEdits(string $file): bool;
+
+    /**
+     * Get the custom replacement tokens.
+     *
+     * @return array
+     */
+    public function getReplacementTokens(): array;
 }

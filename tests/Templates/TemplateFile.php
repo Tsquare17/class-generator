@@ -26,12 +26,6 @@ $template->name('TestFile');
 
 
 /**
- * Define the file name. If not defined, name will be used.
- */
-// $template->fileName('{name}');
-
-
-/**
  * Define the contents of the file.
  */
 $template->fileContent('
@@ -40,4 +34,11 @@ $bar = \'{camel}\';
 $baz = \'{pascal}\';
 $qux = \'{underscore}\';
 $quux = \'{dash}\';
+$customToken = \'{foo_token}\';
 ');
+
+
+/**
+ * Add a custom replacement token.
+ */
+$template->addReplacementToken('{foo_token}', 'foo_value');

@@ -55,7 +55,7 @@ class FileGenerator
     public function getFileName(): void
     {
         if ($fileName = $this->template->getFileName()) {
-            $this->fileName = Strings::fillPlaceholders($this->template->getFileName(), $this->template->getName());
+            $this->fileName = $this->fillPlaceholders($this->template->getFileName(), $this->template->getName());
         }
     }
 
@@ -74,7 +74,7 @@ class FileGenerator
      */
     public function getPath(): bool
     {
-        $path = Strings::fillPlaceholders($this->template->getDestinationPath(), $this->template->getName());
+        $path = $this->fillPlaceholders($this->template->getDestinationPath(), $this->template->getName());
 
         if (!is_dir($path)) {
             $this->createPath($path);
@@ -92,7 +92,7 @@ class FileGenerator
     {
         $this->fileContents = '<?php'
                               . PHP_EOL
-                              . Strings::fillPlaceholders(
+                              . $this->fillPlaceholders(
                                   $this->template->getFileContent(),
                                   $this->template->getName()
                               );
@@ -156,5 +156,18 @@ class FileGenerator
     public function getPathString(): string
     {
         return $this->path . '/' . ($this->fileName ?: $this->name) . '.php';
+    }
+
+    /**
+     * Replace the placeholders in a string.
+     *
+     * @param string $content
+     * @param string $replacement
+     *
+     * @return string
+     */
+    public function fillPlaceholders(string $content, string $replacement): string
+    {
+        return Strings::fillPlaceholders($content, $replacement, $this->template->getReplacementTokens());
     }
 }

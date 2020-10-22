@@ -4,7 +4,7 @@ namespace Tsquare\FileGenerator;
 
 use PHPUnit\Framework\TestCase;
 
-class ReplacementTest extends TestCase
+class EditorTest extends TestCase
 {
     protected Template $template;
 

@@ -14,6 +14,7 @@ class FileTemplate implements Template
     protected string $destinationPath;
     protected string $fileContent;
     protected Editor $editor;
+    protected array $customTokens = [];
 
     /**
      * Initialize FileTemplate, pulling in the specified template file.
@@ -182,5 +183,30 @@ class FileTemplate implements Template
 
 
         return $this->editor->execute($this->name);
+    }
+
+    /**
+     * Add custom replacement tokens.
+     *
+     * @param string $token
+     * @param string $value
+     *
+     * @return FileTemplate
+     */
+    public function addReplacementToken(string $token, string $value): FileTemplate
+    {
+        $this->customTokens[$token] = $value;
+
+        return $this;
+    }
+
+    /**
+     * Get the custom replacement tokens.
+     *
+     * @return array
+     */
+    public function getReplacementTokens(): array
+    {
+        return $this->customTokens;
     }
 }

@@ -13,19 +13,27 @@ class Strings
      *
      * @param string $string
      * @param string $name
+     * @param array  $customTokens
      *
      * @return string
      */
-    public static function fillPlaceholders(string $string, string $name): string
+    public static function fillPlaceholders(string $string, string $name, array $customTokens = []): string
     {
         $camel = lcfirst($name);
         $pascal = ucfirst($name);
         $underscore = self::pascalTo($name, '_');
         $dashed = self::pascalTo($name, '-');
 
+        $tokens = ['{name}', '{camel}', '{pascal}', '{underscore}', '{dash}'];
+        $replacements = [$name, $camel, $pascal, $underscore, $dashed];
+        foreach ($customTokens as $token => $value) {
+            $tokens[] = $token;
+            $replacements[] = $value;
+        }
+
         return str_replace(
-            ['{name}', '{camel}', '{pascal}', '{underscore}', '{dash}'],
-            [$name, $camel, $pascal, $underscore, $dashed],
+            $tokens,
+            $replacements,
             $string
         );
     }

@@ -60,4 +60,10 @@ class TemplateTest extends TestCase
     {
         $this->assertStringContainsString('$quux = \'test-file\';', $this->fileContents);
     }
+
+    /** @test */
+    public function can_use_custom_replacement_tokens(): void
+    {
+        $this->assertStringContainsString('$customToken = \'foo_value\';', $this->fileContents);
+    }
 }

@@ -58,6 +58,7 @@ function foo{name}() {
 
 ');
 
+
 /*
  * Editing actions can be added, that will be used if the file already exists.
  */

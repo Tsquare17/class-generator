@@ -44,6 +44,12 @@ $template->fileName('{name}File');
 
 
 /**
+ * A title can be set for content replacement purposes.
+ */
+$template->title('A Title');
+
+
+/**
  * Define the contents of the file.
  */
 $template->fileContent('
@@ -53,7 +59,7 @@ $foo = \'{underscore}s\';
 $bar = \'{dash}\';
 
 function foo{name}() {
-    return true;
+    return \'{title}\';
 }
 
 ');
@@ -101,9 +107,11 @@ $generator->create();
 
 ##### The following template replace tokens are available.
 ```
-{name}       : ExampleName
-{camel}      : exampleName
-{pascal}     : ExampleName
-{underscore} : example_name
-{dash}       : example-name
+{name}        : ExampleName
+{camel}       : exampleName
+{pascal}      : ExampleName
+{underscore}  : example_name
+{dash}        : example-name
+{name:plural} : ExampleNames
+{title}       : A Title
 ```

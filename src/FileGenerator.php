@@ -74,7 +74,8 @@ class FileGenerator
      */
     public function getPath(): bool
     {
-        $path = $this->fillPlaceholders($this->template->getDestinationPath(), $this->template->getName());
+        $path = $this->template->getAppBasePath()
+                . $this->fillPlaceholders($this->template->getDestinationPath(), $this->template->getName());
 
         if (!is_dir($path)) {
             $this->createPath($path);
@@ -90,6 +91,10 @@ class FileGenerator
      */
     protected function setContents(): void
     {
+        if (!$this->template->getFileContent()) {
+            return;
+        }
+
         $this->fileContents = '<?php'
                               . PHP_EOL
                               . $this->fillPlaceholders(

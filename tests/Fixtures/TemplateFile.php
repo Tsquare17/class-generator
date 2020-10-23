@@ -16,7 +16,7 @@ $template->appBasePath(dirname(__DIR__, 1));
 /**
  * Define the base path for the file.
  */
-$template->destinationPath(dirname(__DIR__, 1) . '/Fixtures/Destination');
+$template->destinationPath('/Fixtures/Destination');
 
 
 /**
@@ -34,4 +34,5 @@ $bar = \'{camel}\';
 $baz = \'{pascal}\';
 $qux = \'{underscore}\';
 $quux = \'{dash}\';
+$quuz = \'{name:plural}\';
 ');

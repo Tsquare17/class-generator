@@ -24,8 +24,19 @@ class Strings
         $underscore = self::pascalTo($name, '_');
         $dashed = self::pascalTo($name, '-');
 
-        $tokens = ['{name}', '{camel}', '{pascal}', '{underscore}', '{dash}'];
-        $replacements = [$name, $camel, $pascal, $underscore, $dashed];
+        $standardTokens = ['name', 'camel', 'pascal', 'underscore', 'dash'];
+        $replacementValues = [$name, $camel, $pascal, $underscore, $dashed];
+
+        $tokens = [];
+        $replacements = [];
+        foreach ($standardTokens as $key => $token) {
+            $tokens[] = '{' . $token . '}';
+            $replacements[] = $replacementValues[$key];
+
+            $tokens[] = '{' . $token . ':plural}';
+            $replacements[] = self::plural($replacements[$key]);
+        }
+
         foreach ($customTokens as $token => $value) {
             $tokens[] = $token;
             $replacements[] = $value;
@@ -55,5 +66,21 @@ class Strings
         }
 
         return implode($glue, $matches[0]);
+    }
+
+    /**
+     * Get the plural form of a word.
+     *
+     * @param string $string
+     *
+     * @return string
+     */
+    public static function plural(string $string): string
+    {
+        if (strpos(strrev($string), 'y') === 0) {
+            return rtrim($string, 'y') . 'ies';
+        }
+
+        return $string . 's';
     }
 }

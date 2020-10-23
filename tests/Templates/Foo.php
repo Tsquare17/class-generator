@@ -16,7 +16,7 @@ $template->appBasePath(dirname(__DIR__, 1));
 /**
  * Define the base path for the file.
  */
-$template->destinationPath(dirname(__DIR__, 1) . '/Fixtures');
+$template->destinationPath('/Fixtures');
 
 
 /**

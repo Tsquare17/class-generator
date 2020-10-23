@@ -16,7 +16,7 @@ $template->appBasePath(dirname(__DIR__, 1));
 /**
  * Define the base path for the file.
  */
-$template->destinationPath(dirname(__DIR__, 1) . '/Templates/Destination');
+$template->destinationPath('/Templates/Destination');
 
 
 /**
@@ -34,6 +34,7 @@ $bar = \'{camel}\';
 $baz = \'{pascal}\';
 $qux = \'{underscore}\';
 $quux = \'{dash}\';
+$quuz = \'{name:plural}\';
 $customToken = \'{foo_token}\';
 ');
 

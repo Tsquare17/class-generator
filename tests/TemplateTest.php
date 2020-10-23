@@ -66,4 +66,10 @@ class TemplateTest extends TestCase
     {
         $this->assertStringContainsString('$customToken = \'foo_value\';', $this->fileContents);
     }
+
+    /** @test */
+    public function can_replace_tokens_with_plural(): void
+    {
+        $this->assertStringContainsString('$quuz = \'TestFiles\';', $this->fileContents);
+    }
 }

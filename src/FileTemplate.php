@@ -10,9 +10,9 @@ class FileTemplate implements Template
 {
     protected ?string $fileName = null;
     protected string $name;
-    protected string $appBasePath;
+    protected ?string $appBasePath = null;
     protected string $destinationPath;
-    protected string $fileContent;
+    protected ?string $fileContent = null;
     protected Editor $editor;
     protected array $customTokens = [];
 
@@ -97,9 +97,9 @@ class FileTemplate implements Template
     /**
      * Get the base application path.
      *
-     * @return string
+     * @return string|null
      */
-    public function getAppBasePath(): string
+    public function getAppBasePath(): ?string
     {
         return $this->appBasePath;
     }

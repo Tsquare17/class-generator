@@ -63,7 +63,7 @@ interface Template
      *
      * @return string
      */
-    public function getAppBasePath(): string;
+    public function getAppBasePath(): ?string;
 
     /**
      * Set the destination path for the generated file.

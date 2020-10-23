@@ -34,6 +34,22 @@ interface Template
     public function getFileName(): ?string;
 
     /**
+     * Set a title.
+     *
+     * @param string $title
+     *
+     * @return Template
+     */
+    public function title(string $title): Template;
+
+    /**
+     * Get the title.
+     *
+     * @return string|null
+     */
+    public function getTitle(): ?string;
+
+    /**
      * Set the name.
      *
      * @param string $name
@@ -114,6 +130,16 @@ interface Template
      * @return bool
      */
     public function executeFileEdits(string $file): bool;
+
+    /**
+     * Add custom replacement tokens.
+     *
+     * @param string $token
+     * @param string $value
+     *
+     * @return FileTemplate
+     */
+    public function addReplacementToken(string $token, string $value): FileTemplate;
 
     /**
      * Get the custom replacement tokens.

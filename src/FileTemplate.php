@@ -10,6 +10,7 @@ class FileTemplate implements Template
 {
     protected ?string $fileName = null;
     protected string $name;
+    protected ?string $title = null;
     protected ?string $appBasePath = null;
     protected string $destinationPath;
     protected ?string $fileContent = null;
@@ -78,6 +79,30 @@ class FileTemplate implements Template
     public function getName(): string
     {
         return $this->name;
+    }
+
+    /**
+     * Set a title.
+     *
+     * @param string $title
+     *
+     * @return FileTemplate
+     */
+    public function title(string $title): FileTemplate
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    /**
+     * Get the title.
+     *
+     * @return string|null
+     */
+    public function getTitle(): ?string
+    {
+        return $this->title;
     }
 
     /**

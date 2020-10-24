@@ -209,4 +209,22 @@ class EditorTest extends TestCase
 
         $this->assertStringContainsString('public function bar_test()', $fileContents);
     }
+    
+    /** @test */
+    public function doesnt_insert_if_contains_string_in_if_not_contains(): void
+    {
+        $editor = new FileEditor();
+
+        $editor->replace('{underscore}', 'bar')->ifNotContaining('{underscore}');
+
+        $this->template->ifFileExists($editor);
+
+        $generator = new FileGenerator($this->template);
+
+        $generator->create();
+
+        $fileContents = file_get_contents(__DIR__ . '/Fixtures/Foo.php');
+
+        $this->assertStringNotContainsString('bar', $fileContents);
+    }
 }

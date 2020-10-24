@@ -95,6 +95,21 @@ class FileEditor implements Editor
     }
 
     /**
+     * Add a condition to insert only if the file contains a string.
+     *
+     * @param string $string
+     *
+     * @return $this
+     */
+    public function ifNotContaining(string $string): FileEditor
+    {
+        $index = count($this->replacements) - 1;
+        $this->replacements[$index]['not'] = $string;
+
+        return $this;
+    }
+
+    /**
      * Execute file edits.
      *
      * @param string|null $name
@@ -105,6 +120,13 @@ class FileEditor implements Editor
     {
         foreach ($this->replacements as $replacement) {
             $conditionMet = false;
+
+            if (
+                isset($replacement['not'])
+                && strpos($this->file, Strings::fillPlaceholders($replacement['not'], $name))
+            ) {
+                continue;
+            }
 
             if (strpos($this->file, Strings::fillPlaceholders($replacement['search'], $name))) {
                 $this->file = str_replace(

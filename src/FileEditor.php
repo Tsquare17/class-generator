@@ -99,7 +99,7 @@ class FileEditor implements Editor
      *
      * @param string $string
      *
-     * @return $this
+     * @return FileEditor
      */
     public function ifNotContaining(string $string): FileEditor
     {

@@ -37,9 +37,9 @@ class FileEditor implements Editor
     /**
      * Insert a string on the line before another string.
      *
-     * @param string      $insert
-     * @param string      $before
-     * @param string|null $or
+     * @param string $insert
+     * @param string $before
+     * @param array $or
      *
      * @return FileEditor
      */
@@ -124,13 +124,11 @@ class FileEditor implements Editor
                     if (strpos($this->file, Strings::fillPlaceholders($text, $name))) {
                         $replacementText = null;
                         if ($condition === 'before') {
-                            $replacementText = Strings::fillPlaceholders($replacement['replace'], $name)
-                                               . Strings::fillPlaceholders($text, $name);
+                            $replacementText = $replacement['replace'] . $text;
                         } elseif ($condition === 'after') {
-                            $replacementText = Strings::fillPlaceholders($text, $name)
-                                               . Strings::fillPlaceholders($replacement['replace'], $name);
+                            $replacementText = $text . $replacement['replace'];
                         } elseif ($condition === 'replace') {
-                            $replacementText = Strings::fillPlaceholders($replacement['replace'], $name);
+                            $replacementText = $replacement['replace'];
                         }
 
                         if (!$replacementText) {
@@ -139,7 +137,7 @@ class FileEditor implements Editor
 
                         $this->file = str_replace(
                             Strings::fillPlaceholders($text, $name),
-                            $replacementText,
+                            Strings::fillPlaceholders($replacementText, $name),
                             $this->file
                         );
                         $conditionMet = true;

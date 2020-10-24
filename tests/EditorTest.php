@@ -112,4 +112,101 @@ class EditorTest extends TestCase
 
         $this->assertStringContainsString('public function bar()', $fileContents);
     }
+    
+    /** @test */
+    public function can_insert_before_text_or_other_text(): void
+    {
+        $editor = new FileEditor();
+
+        $editor->insertBefore('
+    public function get{name}(): {name}
+    {
+        return $this;
+    }
+
+', 'some non-existent text', [
+            'before' => '    public function {underscore}',
+        ]);
+
+        $this->template->ifFileExists($editor);
+
+        $generator = new FileGenerator($this->template);
+
+        $generator->create();
+
+        $fileContents = file_get_contents(__DIR__ . '/Fixtures/Foo.php');
+
+        $this->assertStringContainsString('
+    public function getFoo(): Foo
+    {
+        return $this;
+    }
+
+    public function foo(): Foo
+    {
+        return $this;
+    }
+', $fileContents);
+    }
+
+    /** @test */
+    public function can_insert_after_text_or_other_text(): void
+    {
+        $editor = new FileEditor();
+
+        $editor->insertAfter('
+    public function bar{name}(): {name}
+    {
+        return $this;
+    }
+', 'public function {underscore}Method(): {name}
+    {
+        return $this;
+    }
+', [
+    'after' => 'public function {underscore}(): {name}
+    {
+        return $this;
+    }
+'
+        ]);
+
+        $this->template->ifFileExists($editor);
+
+        $generator = new FileGenerator($this->template);
+
+        $generator->create();
+
+        $fileContents = file_get_contents(__DIR__ . '/Fixtures/Foo.php');
+
+        $this->assertStringContainsString('
+    public function foo(): Foo
+    {
+        return $this;
+    }
+
+    public function barFoo(): Foo
+    {
+        return $this;
+    }
+', $fileContents);
+    }
+
+    /** @test */
+    public function can_replace_text_or_other_text(): void
+    {
+        $editor = new FileEditor();
+
+        $editor->replace('{underscore}nonexistent', 'bar_test', ['replace' => '{underscore}']);
+
+        $this->template->ifFileExists($editor);
+
+        $generator = new FileGenerator($this->template);
+
+        $generator->create();
+
+        $fileContents = file_get_contents(__DIR__ . '/Fixtures/Foo.php');
+
+        $this->assertStringContainsString('public function bar_test()', $fileContents);
+    }
 }

@@ -37,14 +37,19 @@ class FileEditor implements Editor
     /**
      * Insert a string on the line before another string.
      *
-     * @param string $insert
-     * @param string $before
+     * @param string      $insert
+     * @param string      $before
+     * @param string|null $or
      *
      * @return FileEditor
      */
-    public function insertBefore(string $insert, string $before): FileEditor
+    public function insertBefore(string $insert, string $before, array $or = []): FileEditor
     {
-        $this->replace($before, ltrim($insert, PHP_EOL) . $before);
+        if (empty($or)) {
+            $this->replace($before, ltrim($insert, PHP_EOL) . $before, $or);
+        } else {
+            $this->replace($before, ltrim($insert, PHP_EOL), $or);
+        }
 
         return $this;
     }
@@ -54,12 +59,17 @@ class FileEditor implements Editor
      *
      * @param string $insert
      * @param string $after
+     * @param array  $or
      *
      * @return FileEditor
      */
-    public function insertAfter(string $insert, string $after): FileEditor
+    public function insertAfter(string $insert, string $after, array $or = []): FileEditor
     {
-        $this->replace($after, $after . $insert);
+        if (empty($or)) {
+            $this->replace($after, $after . $insert, $or);
+        } else {
+            $this->replace($after, $insert, $or);
+        }
 
         return $this;
     }
@@ -69,14 +79,16 @@ class FileEditor implements Editor
      *
      * @param string $search
      * @param string $replace
+     * @param array  $or
      *
      * @return FileEditor
      */
-    public function replace(string $search, string $replace): FileEditor
+    public function replace(string $search, string $replace, array $or = []): FileEditor
     {
         $this->replacements[] = [
             'search' => $search,
             'replace' => $replace,
+            'or' => $or,
         ];
 
         return $this;
@@ -92,11 +104,48 @@ class FileEditor implements Editor
     public function execute(string $name): bool
     {
         foreach ($this->replacements as $replacement) {
-            $this->file = str_replace(
-                Strings::fillPlaceholders($replacement['search'], $name),
-                Strings::fillPlaceholders($replacement['replace'], $name),
-                $this->file
-            );
+            $conditionMet = false;
+
+            if (strpos($this->file, Strings::fillPlaceholders($replacement['search'], $name))) {
+                $this->file = str_replace(
+                    Strings::fillPlaceholders($replacement['search'], $name),
+                    Strings::fillPlaceholders($replacement['replace'], $name),
+                    $this->file
+                );
+                $conditionMet = true;
+            }
+
+            if ($conditionMet === false && !empty($replacement['or'])) {
+                foreach ($replacement['or'] as $condition => $text) {
+                    if ($conditionMet === true) {
+                        continue;
+                    }
+
+                    if (strpos($this->file, Strings::fillPlaceholders($text, $name))) {
+                        $replacementText = null;
+                        if ($condition === 'before') {
+                            $replacementText = Strings::fillPlaceholders($replacement['replace'], $name)
+                                               . Strings::fillPlaceholders($text, $name);
+                        } elseif ($condition === 'after') {
+                            $replacementText = Strings::fillPlaceholders($text, $name)
+                                               . Strings::fillPlaceholders($replacement['replace'], $name);
+                        } elseif ($condition === 'replace') {
+                            $replacementText = Strings::fillPlaceholders($replacement['replace'], $name);
+                        }
+
+                        if (!$replacementText) {
+                            continue;
+                        }
+
+                        $this->file = str_replace(
+                            Strings::fillPlaceholders($text, $name),
+                            $replacementText,
+                            $this->file
+                        );
+                        $conditionMet = true;
+                    }
+                }
+            }
         }
 
         return file_put_contents($this->fileName, $this->file);

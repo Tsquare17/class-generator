@@ -22,30 +22,33 @@ interface Editor
      *
      * @param string $insert
      * @param string $before
+     * @param array  $or
      *
      * @return Editor
      */
-    public function insertBefore(string $insert, string $before): Editor;
+    public function insertBefore(string $insert, string $before, array $or = []): Editor;
 
     /**
      * Insert a string on the line after a string.
      *
      * @param string $insert
      * @param string $after
+     * @param array  $or
      *
      * @return Editor
      */
-    public function insertAfter(string $insert, string $after): Editor;
+    public function insertAfter(string $insert, string $after, array $or = []): Editor;
 
     /**
      * Replace a string with another string.
      *
      * @param string $search
      * @param string $replace
+     * @param array  $or
      *
      * @return Editor
      */
-    public function replace(string $search, string $replace): Editor;
+    public function replace(string $search, string $replace, array $or = []): Editor;
 
     /**
      * Execute file edits.

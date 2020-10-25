@@ -40,10 +40,13 @@ $quux = \'{dash}\';
 $quuz = \'{name:plural}\';
 $customToken = \'{foo_token}\';
 $quuuz = \'{title}\';
+$quuuuz = \'{underscore:plural:upper}\';
 ');
 
 
 /**
  * Add a custom replacement token.
  */
-$template->addReplacementToken('{foo_token}', 'foo_value');
+$template->addReplacementToken('foo_token', function ($name) {
+    return 'foo_value';
+});

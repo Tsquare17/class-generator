@@ -55,7 +55,7 @@ $template->title('A Title');
 $template->fileContent('
 namespace App\Foo\{name};
 
-$foo = \'{underscore}s\';
+$foo = \'{underscore}\';
 $bar = \'{dash}\';
 
 function foo{name}() {

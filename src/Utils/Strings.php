@@ -19,34 +19,15 @@ class Strings
      */
     public static function fillPlaceholders(string $string, string $name, array $customTokens = []): string
     {
-        $camel = lcfirst($name);
-        $pascal = ucfirst($name);
-        $underscore = self::pascalTo($name, '_');
-        $dashed = self::pascalTo($name, '-');
+        $fileTokens = self::getTokens($string);
+        foreach ($fileTokens[1] as $fileToken) {
+            $tokenActions = explode(':', $fileToken);
 
-        $standardTokens = ['name', 'camel', 'pascal', 'underscore', 'dash'];
-        $replacementValues = [$name, $camel, $pascal, $underscore, $dashed];
-
-        $tokens = [];
-        $replacements = [];
-        foreach ($standardTokens as $key => $token) {
-            $tokens[] = '{' . $token . '}';
-            $replacements[] = $replacementValues[$key];
-
-            $tokens[] = '{' . $token . ':plural}';
-            $replacements[] = self::plural($replacements[$key]);
+            $replacementString = self::executeTokenAction($tokenActions, $name, $customTokens);
+            $string = str_replace('{' . $fileToken . '}', $replacementString, $string);
         }
 
-        foreach ($customTokens as $token => $value) {
-            $tokens[] = $token;
-            $replacements[] = $value;
-        }
-
-        return str_replace(
-            $tokens,
-            $replacements,
-            $string
-        );
+        return $string;
     }
 
     /**
@@ -82,5 +63,67 @@ class Strings
         }
 
         return $string . 's';
+    }
+
+    /**
+     * Get all tokens in a string.
+     *
+     * @param string $string
+     *
+     * @return array
+     */
+    public static function getTokens(string $string): array
+    {
+        preg_match_all('/{(.[a-z:-_]+?)}/', $string, $matches);
+
+        return $matches;
+    }
+
+    /**
+     * Perform the associated token actions.
+     *
+     * @param array  $tokens
+     * @param string $string
+     * @param array  $customTokens
+     *
+     * @return string
+     */
+    public static function executeTokenAction(array $tokens, string $string, array $customTokens = []): string
+    {
+        foreach ($tokens as $token) {
+            if ($token === 'camel') {
+                $string = lcfirst($string);
+            }
+
+            if ($token === 'pascal') {
+                $string = ucfirst($string);
+            }
+
+            if ($token === 'underscore') {
+                $string = self::pascalTo($string, '_');
+            }
+
+            if ($token === 'dash') {
+                $string = self::pascalTo($string, '-');
+            }
+
+            if ($token === 'plural') {
+                $string = self::plural($string);
+            }
+
+            if ($token === 'upper') {
+                $string = strtoupper($string);
+            }
+
+            if ($token === 'lower') {
+                $string = strtolower($string);
+            }
+
+            if (isset($customTokens[$token])) {
+                $string = $customTokens[$token]($string);
+            }
+        }
+
+        return $string;
     }
 }

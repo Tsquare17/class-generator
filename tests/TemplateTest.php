@@ -78,4 +78,10 @@ class TemplateTest extends TestCase
     {
         $this->assertStringContainsString('$quuuz = \'A Title\';', $this->fileContents);
     }
+
+    /** @test */
+    public function can_use_multiple_token_modifiers(): void
+    {
+        $this->assertStringContainsString('$quuuuz = \'TEST_FILES\';', $this->fileContents);
+    }
 }

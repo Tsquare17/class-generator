@@ -135,11 +135,11 @@ interface Template
      * Add custom replacement tokens.
      *
      * @param string $token
-     * @param string $value
+     * @param callable $value
      *
      * @return FileTemplate
      */
-    public function addReplacementToken(string $token, string $value): FileTemplate;
+    public function addReplacementToken(string $token, callable $value): FileTemplate;
 
     /**
      * Get the custom replacement tokens.

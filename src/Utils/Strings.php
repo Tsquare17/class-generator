@@ -58,7 +58,20 @@ class Strings
      */
     public static function plural(string $string): string
     {
-        if (strpos(strrev($string), 'y') === 0) {
+        $reverse = strrev($string);
+        $last = $reverse[0];
+        $nextToLast = $reverse[1];
+        $lastTwo = $nextToLast . $last;
+
+        if (in_array($lastTwo, ['ss', 'sh', 'ch'])) {
+            return $string . 'es';
+        }
+
+        if ($last === 'y') {
+            if (in_array($nextToLast, ['a', 'e', 'i', 'o', 'u'])) {
+                return $string . 's';
+            }
+
             return rtrim($string, 'y') . 'ies';
         }
 

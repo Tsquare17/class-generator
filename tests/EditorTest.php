@@ -112,7 +112,7 @@ class EditorTest extends TestCase
 
         $this->assertStringContainsString('public function bar()', $fileContents);
     }
-    
+
     /** @test */
     public function can_insert_before_text_or_other_text(): void
     {
@@ -209,7 +209,7 @@ class EditorTest extends TestCase
 
         $this->assertStringContainsString('public function bar_test()', $fileContents);
     }
-    
+
     /** @test */
     public function doesnt_insert_if_contains_string_in_if_not_contains(): void
     {

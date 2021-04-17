@@ -27,11 +27,18 @@ class StringsTest extends TestCase
     public function can_convert_to_plural(): void
     {
         $test = Strings::plural('test');
-
         $this->assertEquals('tests', $test);
 
-        $endsWithY = Strings::plural('country');
+        $endsWithConsonantY = Strings::plural('country');
+        $this->assertEquals('countries', $endsWithConsonantY);
 
-        $this->assertEquals('countries', $endsWithY);
+        $endsWithVowelY = Strings::plural('ray');
+        $this->assertEquals('rays', $endsWithVowelY);
+
+        $endsWithO = Strings::plural('photo');
+        $this->assertEquals('photos', $endsWithO);
+
+        $endsWithSH = Strings::plural('brush');
+        $this->assertEquals('brushes', $endsWithSH);
     }
 }

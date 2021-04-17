@@ -29,6 +29,7 @@ $template->name('Foo');
  * Define the contents of the file.
  */
 $template->fileContent(<<<'FILE'
+
 namespace Fixtures;
 
 class {name}

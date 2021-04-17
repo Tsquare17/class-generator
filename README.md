@@ -52,17 +52,17 @@ $template->title('A Title');
 /**
  * Define the contents of the file.
  */
-$template->fileContent('
+$template->fileContent(<<<'FILE'
 namespace App\Foo\{name};
 
-$foo = \'{underscore}\';
-$bar = \'{dash}\';
+$foo = '{underscore}';
+$bar = '{dash}';
 
 function foo{name}() {
-    return \'{title}\';
+    return '{title}';
 }
 
-');
+FILE);
 
 
 /*

@@ -1,5 +1,4 @@
 <?php
-
 namespace Fixtures;
 
 class Foo

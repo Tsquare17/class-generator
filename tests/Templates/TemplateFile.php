@@ -31,17 +31,17 @@ $template->title('A Title');
 /**
  * Define the contents of the file.
  */
-$template->fileContent('
-$foo = \'{name}\';
-$bar = \'{camel}\';
-$baz = \'{pascal}\';
-$qux = \'{underscore}\';
-$quux = \'{dash}\';
-$quuz = \'{name:plural}\';
-$customToken = \'{foo_token}\';
-$quuuz = \'{title}\';
-$quuuuz = \'{underscore:plural:upper}\';
-');
+$template->fileContent(<<<'FILE'
+$foo = '{name}';
+$bar = '{camel}';
+$baz = '{pascal}';
+$qux = '{underscore}';
+$quux = '{dash}';
+$quuz = '{name:plural}';
+$customToken = '{foo_token}';
+$quuuz = '{title}';
+$quuuuz = '{underscore:plural:upper}';
+FILE);
 
 
 /**

@@ -28,8 +28,7 @@ $template->name('Foo');
 /**
  * Define the contents of the file.
  */
-$template->fileContent(
-    '
+$template->fileContent(<<<'FILE'
 namespace Fixtures;
 
 class {name}
@@ -39,5 +38,4 @@ class {name}
         return $this;
     }
 }
-'
-);
+FILE);

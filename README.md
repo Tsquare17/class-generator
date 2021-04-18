@@ -44,12 +44,6 @@ $template->fileName('{name}File');
 
 
 /**
- * A title can be set for content replacement purposes.
- */
-$template->title('A Title');
-
-
-/**
  * Define the contents of the file.
  */
 $template->fileContent(<<<'FILE'
@@ -113,5 +107,5 @@ $generator->create();
 {underscore}  : example_name
 {dash}        : example-name
 {name:plural} : ExampleNames
-{title}       : A Title
+{title}       : Example Name
 ```

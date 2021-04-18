@@ -82,30 +82,6 @@ class FileTemplate implements Template
     }
 
     /**
-     * Set a title.
-     *
-     * @param string $title
-     *
-     * @return FileTemplate
-     */
-    public function title(string $title): FileTemplate
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
-    /**
-     * Get the title.
-     *
-     * @return string|null
-     */
-    public function getTitle(): ?string
-    {
-        return $this->title;
-    }
-
-    /**
      * Set the base application path.
      *
      * @param string $path

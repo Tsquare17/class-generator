@@ -72,11 +72,11 @@ class TemplateTest extends TestCase
     {
         $this->assertStringContainsString('$quuz = \'TestFiles\';', $this->fileContents);
     }
-    
+
     /** @test */
     public function can_replace_title_token(): void
     {
-        $this->assertStringContainsString('$quuuz = \'A Title\';', $this->fileContents);
+        $this->assertStringContainsString('$quuuz = \'Test File\';', $this->fileContents);
     }
 
     /** @test */

@@ -25,9 +25,6 @@ $template->destinationPath('/Templates/Destination');
 $template->name('TestFile');
 
 
-$template->title('A Title');
-
-
 /**
  * Define the contents of the file.
  */

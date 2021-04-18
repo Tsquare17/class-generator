@@ -132,6 +132,10 @@ class Strings
                 $string = strtolower($string);
             }
 
+            if ($token === 'title') {
+                $string = ucwords(self::pascalTo($string, ' '));
+            }
+
             if (isset($customTokens[$token])) {
                 $string = $customTokens[$token]($string);
             }

@@ -34,22 +34,6 @@ interface Template
     public function getFileName(): ?string;
 
     /**
-     * Set a title.
-     *
-     * @param string $title
-     *
-     * @return Template
-     */
-    public function title(string $title): Template;
-
-    /**
-     * Get the title.
-     *
-     * @return string|null
-     */
-    public function getTitle(): ?string;
-
-    /**
      * Set the name.
      *
      * @param string $name

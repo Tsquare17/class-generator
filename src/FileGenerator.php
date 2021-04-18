@@ -173,12 +173,6 @@ class FileGenerator
      */
     public function fillPlaceholders(string $content, string $replacement): string
     {
-        if ($this->template->getTitle()) {
-            $this->template->addReplacementToken('title', function () {
-                return $this->template->getTitle();
-            });
-        }
-
         return Strings::fillPlaceholders($content, $replacement, $this->template->getReplacementTokens());
     }
 }

@@ -14,6 +14,7 @@ class FileEditor implements Editor
     protected string $file;
     protected string $fileName;
     protected array $replacements;
+    protected string $name;
 
     /**
      * Specify the file to be edited.
@@ -126,57 +127,22 @@ class FileEditor implements Editor
     /**
      * Execute file edits.
      *
-     * @param string|null $name
+     * @param string $name
      *
      * @return bool
      */
     public function execute(string $name): bool
     {
+        $this->name = $name;
+
         foreach ($this->replacements as $replacement) {
-            $conditionMet = false;
-
-            if (isset($replacement['not'])) {
-                $not = Strings::fillPlaceholders($replacement['not'], $name);
-                if (strpos($this->file, $not)) {
-                    continue;
-                }
-
-                if ($replacement['regex']) {
-                    $matched = preg_match(
-                        $not,
-                        $this->file,
-                        $match
-                    );
-                    if ($matched) {
-                        continue;
-                    }
-                }
+            if ($this->matchNot($replacement)) {
+                continue;
             }
 
-            if ($replacement['regex']) {
-                $search = Strings::fillPlaceholders($replacement['search'], $name);
-                $matched = preg_match(
-                    $search,
-                    $this->file,
-                    $match
-                );
-                if ($matched) {
-                    $replacementText = str_replace($search, $match[0], $replacement['replace']);
-                    $this->file = str_replace(
-                        Strings::fillPlaceholders($match[0], $name),
-                        Strings::fillPlaceholders($replacementText, $name),
-                        $this->file
-                    );
-                    $conditionMet = true;
-                }
-            } elseif (strpos($this->file, Strings::fillPlaceholders($replacement['search'], $name))) {
-                $this->file = str_replace(
-                    Strings::fillPlaceholders($replacement['search'], $name),
-                    Strings::fillPlaceholders($replacement['replace'], $name),
-                    $this->file
-                );
-                $conditionMet = true;
-            }
+            $search = Strings::fillPlaceholders($replacement['search'], $name);
+
+            $conditionMet = $this->replaceString($search, $search, $replacement['replace'], $replacement['regex']);
 
             if ($conditionMet === false && !empty($replacement['or'])) {
                 foreach ($replacement['or'] as $condition => $text) {
@@ -184,44 +150,122 @@ class FileEditor implements Editor
                         continue;
                     }
 
-                    $replacementText = null;
-                    if ($condition === 'before') {
-                        $replacementText = $replacement['replace'] . $text;
-                    } elseif ($condition === 'after') {
-                        $replacementText = $text . $replacement['replace'];
-                    } elseif ($condition === 'replace') {
-                        $replacementText = $replacement['replace'];
-                    }
-
-                    if (!$replacementText) {
-                        continue;
-                    }
-
-                    if ($replacement['regex']) {
-                        $matched = preg_match(Strings::fillPlaceholders($text, $name), $this->file, $match);
-                        if ($matched) {
-                            $replacementText = str_replace($replacement['search'], $match[0], $replacementText);
-                            $this->file = str_replace(
-                                Strings::fillPlaceholders($match[0], $name),
-                                Strings::fillPlaceholders($replacementText, $name),
-                                $this->file
-                            );
-
-                            $conditionMet = true;
-                        }
-                    } elseif (strpos($this->file, Strings::fillPlaceholders($text, $name))) {
-                        $this->file = str_replace(
-                            Strings::fillPlaceholders($text, $name),
-                            Strings::fillPlaceholders($replacementText, $name),
-                            $this->file
-                        );
-
-                        $conditionMet = true;
-                    }
+                    $conditionMet = $this->matchCondition($condition, $text, $replacement);
                 }
             }
         }
 
         return file_put_contents($this->fileName, $this->file);
+    }
+
+    /**
+     * Determine if the not condition string exists.
+     *
+     * @param array $replacement
+     * @return bool
+     */
+    protected function matchNot(array $replacement): bool
+    {
+        if (isset($replacement['not'])) {
+            $not = Strings::fillPlaceholders($replacement['not'], $this->name);
+            if (strpos($this->file, $not)) {
+                return true;
+            }
+
+            if ($replacement['regex']) {
+                $matched = preg_match(
+                    $not,
+                    $this->file,
+                    $match
+                );
+                if ($matched) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Match and replace a regular expression.
+     *
+     * @param string $search
+     * @param string $replace
+     * @param string $replacement
+     * @return bool
+     */
+    protected function matchRegex(string $search, string $replace, string $replacement): bool
+    {
+        $matched = preg_match(
+            Strings::fillPlaceholders($search, $this->name),
+            $this->file,
+            $match
+        );
+        if ($matched) {
+            $replacementText = str_replace($replace, $match[0], $replacement);
+            $this->file = str_replace(
+                Strings::fillPlaceholders($match[0], $this->name),
+                Strings::fillPlaceholders($replacementText, $this->name),
+                $this->file
+            );
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Replace a string based on a condition.
+     *
+     * @param string $condition
+     * @param string $text
+     * @param array $replacement
+     * @return bool
+     */
+    protected function matchCondition(string $condition, string $text, array $replacement): bool
+    {
+        $replacementText = null;
+        if ($condition === 'before') {
+            $replacementText = $replacement['replace'] . $text;
+        } elseif ($condition === 'after') {
+            $replacementText = $text . $replacement['replace'];
+        } elseif ($condition === 'replace') {
+            $replacementText = $replacement['replace'];
+        }
+
+        if (!$replacementText) {
+            return true;
+        }
+
+        return $this->replaceString($text, $replacement['search'], $replacementText, $replacement['regex']);
+    }
+
+    /**
+     * Replace a string.
+     *
+     * @param string $search
+     * @param string $replace
+     * @param string $replacementText
+     * @param bool $isRegex
+     * @return bool
+     */
+    protected function replaceString(string $search, string $replace, string $replacementText, bool $isRegex): bool
+    {
+        if ($isRegex) {
+            if ($this->matchRegex($search, $replace, $replacementText)) {
+                return true;
+            }
+        } elseif (strpos($this->file, Strings::fillPlaceholders($search, $this->name))) {
+            $this->file = str_replace(
+                Strings::fillPlaceholders($search, $this->name),
+                Strings::fillPlaceholders($replacementText, $this->name),
+                $this->file
+            );
+
+            return true;
+        }
+
+        return false;
     }
 }

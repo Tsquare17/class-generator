@@ -145,9 +145,10 @@ class FileEditor implements Editor
             if ($replacement['regex']) {
                 $matched = preg_match($replacement['search'], $this->file, $match);
                 if ($matched) {
+                    $replacementText = str_replace($replacement['search'], $match[0], $replacement['replace']);
                     $this->file = str_replace(
                         Strings::fillPlaceholders($match[0], $name),
-                        Strings::fillPlaceholders($replacement['replace'], $name),
+                        Strings::fillPlaceholders($replacementText, $name),
                         $this->file
                     );
                     $conditionMet = true;
@@ -183,6 +184,7 @@ class FileEditor implements Editor
                     if ($replacement['regex']) {
                         $matched = preg_match(Strings::fillPlaceholders($text, $name), $this->file, $match);
                         if ($matched) {
+                            $replacementText = str_replace($replacement['search'], $match[0], $replacementText);
                             $this->file = str_replace(
                                 Strings::fillPlaceholders($match[0], $name),
                                 Strings::fillPlaceholders($replacementText, $name),

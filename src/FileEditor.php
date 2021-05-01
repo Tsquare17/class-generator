@@ -135,17 +135,33 @@ class FileEditor implements Editor
         foreach ($this->replacements as $replacement) {
             $conditionMet = false;
 
-            if (
-                isset($replacement['not'])
-                && strpos($this->file, Strings::fillPlaceholders($replacement['not'], $name))
-            ) {
-                continue;
+            if (isset($replacement['not'])) {
+                $not = Strings::fillPlaceholders($replacement['not'], $name);
+                if (strpos($this->file, $not)) {
+                    continue;
+                }
+
+                if ($replacement['regex']) {
+                    $matched = preg_match(
+                        $not,
+                        $this->file,
+                        $match
+                    );
+                    if ($matched) {
+                        continue;
+                    }
+                }
             }
 
             if ($replacement['regex']) {
-                $matched = preg_match($replacement['search'], $this->file, $match);
+                $search = Strings::fillPlaceholders($replacement['search'], $name);
+                $matched = preg_match(
+                    $search,
+                    $this->file,
+                    $match
+                );
                 if ($matched) {
-                    $replacementText = str_replace($replacement['search'], $match[0], $replacement['replace']);
+                    $replacementText = str_replace($search, $match[0], $replacement['replace']);
                     $this->file = str_replace(
                         Strings::fillPlaceholders($match[0], $name),
                         Strings::fillPlaceholders($replacementText, $name),

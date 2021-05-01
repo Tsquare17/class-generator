@@ -235,6 +235,42 @@ class EditorTest extends TestCase
     }
 
     /** @test */
+    public function doesnt_insert_if_contains_regex_in_if_not_contains(): void
+    {
+        $editor = new FileEditor();
+
+        $editor->replace('/{underscore}/', 'bar')->ifNotContaining('/{underscore}/')->isRegex();
+
+        $this->template->fileEditor($editor);
+
+        $generator = new FileGenerator($this->template);
+
+        $generator->create();
+
+        $fileContents = file_get_contents(__DIR__ . '/Fixtures/Foo.php');
+
+        $this->assertStringNotContainsString('bar', $fileContents);
+    }
+
+    /** @test */
+    public function does_insert_if_doesnt_contain_regex_in_if_not_contains(): void
+    {
+        $editor = new FileEditor();
+
+        $editor->replace('/{underscore}/', 'bar')->ifNotContaining('/nonexistent/')->isRegex();
+
+        $this->template->fileEditor($editor);
+
+        $generator = new FileGenerator($this->template);
+
+        $generator->create();
+
+        $fileContents = file_get_contents(__DIR__ . '/Fixtures/Foo.php');
+
+        $this->assertStringContainsString('bar', $fileContents);
+    }
+
+    /** @test */
     public function can_replace_regex(): void
     {
         $editor = new FileEditor();

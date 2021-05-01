@@ -1,8 +1,10 @@
 <?php
 
-namespace Tsquare\FileGenerator;
-
 use PHPUnit\Framework\TestCase;
+use Tsquare\FileGenerator\FileEditor;
+use Tsquare\FileGenerator\FileGenerator;
+use Tsquare\FileGenerator\FileTemplate;
+use Tsquare\FileGenerator\Template;
 
 class EditorTest extends TestCase
 {
@@ -45,7 +47,7 @@ class EditorTest extends TestCase
 
         $fileContents = file_get_contents(__DIR__ . '/Fixtures/Foo.php');
 
-        $this->assertStringContainsString('
+        self::assertStringContainsString('
     public function getFoo(): Foo
     {
         return $this;
@@ -82,7 +84,7 @@ class EditorTest extends TestCase
 
         $fileContents = file_get_contents(__DIR__ . '/Fixtures/Foo.php');
 
-        $this->assertStringContainsString('
+        self::assertStringContainsString('
     public function foo(): Foo
     {
         return $this;
@@ -136,7 +138,7 @@ class EditorTest extends TestCase
 
         $fileContents = file_get_contents(__DIR__ . '/Fixtures/Foo.php');
 
-        $this->assertStringContainsString('
+        self::assertStringContainsString('
     public function getFoo(): Foo
     {
         return $this;
@@ -213,7 +215,7 @@ class EditorTest extends TestCase
 
         $fileContents = file_get_contents(__DIR__ . '/Fixtures/Foo.php');
 
-        $this->assertStringContainsString('public function bar_test()', $fileContents);
+        self::assertStringContainsString('public function bar_test()', $fileContents);
     }
 
     /** @test */
@@ -231,7 +233,7 @@ class EditorTest extends TestCase
 
         $fileContents = file_get_contents(__DIR__ . '/Fixtures/Foo.php');
 
-        $this->assertStringNotContainsString('bar', $fileContents);
+        self::assertStringNotContainsString('bar', $fileContents);
     }
 
     /** @test */
@@ -249,7 +251,7 @@ class EditorTest extends TestCase
 
         $fileContents = file_get_contents(__DIR__ . '/Fixtures/Foo.php');
 
-        $this->assertStringNotContainsString('bar', $fileContents);
+        self::assertStringNotContainsString('bar', $fileContents);
     }
 
     /** @test */
@@ -267,7 +269,7 @@ class EditorTest extends TestCase
 
         $fileContents = file_get_contents(__DIR__ . '/Fixtures/Foo.php');
 
-        $this->assertStringContainsString('bar', $fileContents);
+        self::assertStringContainsString('bar', $fileContents);
     }
 
     /** @test */
@@ -285,6 +287,6 @@ class EditorTest extends TestCase
 
         $fileContents = file_get_contents(__DIR__ . '/Fixtures/Foo.php');
 
-        $this->assertStringContainsString('$isRegex = true;', $fileContents);
+        self::assertStringContainsString('$isRegex = true;', $fileContents);
     }
 }

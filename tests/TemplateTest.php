@@ -1,8 +1,8 @@
 <?php
 
-namespace Tsquare\FileGenerator;
-
 use PHPUnit\Framework\TestCase;
+use Tsquare\FileGenerator\FileGenerator;
+use Tsquare\FileGenerator\FileTemplate;
 
 class TemplateTest extends TestCase
 {
@@ -28,60 +28,60 @@ class TemplateTest extends TestCase
     /** @test */
     public function file_exists(): void
     {
-        $this->assertFileExists(__DIR__ . '/Templates/Destination/TestFile.php');
+        self::assertFileExists(__DIR__ . '/Templates/Destination/TestFile.php');
     }
 
     /** @test */
     public function name_is_replaced(): void
     {
-        $this->assertStringContainsString('$foo = \'TestFile\';', $this->fileContents);
+        self::assertStringContainsString('$foo = \'TestFile\';', $this->fileContents);
     }
 
     /** @test */
     public function camel_is_replaced(): void
     {
-        $this->assertStringContainsString('$bar = \'testFile\';', $this->fileContents);
+        self::assertStringContainsString('$bar = \'testFile\';', $this->fileContents);
     }
 
     /** @test */
     public function pascal_is_replaced(): void
     {
-        $this->assertStringContainsString('$baz = \'TestFile\';', $this->fileContents);
+        self::assertStringContainsString('$baz = \'TestFile\';', $this->fileContents);
     }
 
     /** @test */
     public function underscore_is_replaced(): void
     {
-        $this->assertStringContainsString('$qux = \'test_file\';', $this->fileContents);
+        self::assertStringContainsString('$qux = \'test_file\';', $this->fileContents);
     }
 
     /** @test */
     public function dash_is_replaced(): void
     {
-        $this->assertStringContainsString('$quux = \'test-file\';', $this->fileContents);
+        self::assertStringContainsString('$quux = \'test-file\';', $this->fileContents);
     }
 
     /** @test */
     public function can_use_custom_replacement_tokens(): void
     {
-        $this->assertStringContainsString('$customToken = \'foo_value\';', $this->fileContents);
+        self::assertStringContainsString('$customToken = \'foo_value\';', $this->fileContents);
     }
 
     /** @test */
     public function can_replace_tokens_with_plural(): void
     {
-        $this->assertStringContainsString('$quuz = \'TestFiles\';', $this->fileContents);
+        self::assertStringContainsString('$quuz = \'TestFiles\';', $this->fileContents);
     }
 
     /** @test */
     public function can_replace_title_token(): void
     {
-        $this->assertStringContainsString('$quuuz = \'Test File\';', $this->fileContents);
+        self::assertStringContainsString('$quuuz = \'Test File\';', $this->fileContents);
     }
 
     /** @test */
     public function can_use_multiple_token_modifiers(): void
     {
-        $this->assertStringContainsString('$quuuuz = \'TEST_FILES\';', $this->fileContents);
+        self::assertStringContainsString('$quuuuz = \'TEST_FILES\';', $this->fileContents);
     }
 }

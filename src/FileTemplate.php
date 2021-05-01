@@ -160,7 +160,7 @@ class FileTemplate implements Template
      *
      * @return FileTemplate
      */
-    public function ifFileExists(Editor $editor): FileTemplate
+    public function fileEditor(Editor $editor): FileTemplate
     {
         $this->editor = $editor;
 

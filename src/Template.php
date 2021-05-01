@@ -104,7 +104,7 @@ interface Template
      *
      * @return FileTemplate
      */
-    public function ifFileExists(Editor $editor): Template;
+    public function fileEditor(Editor $editor): Template;
 
     /**
      * Run the Editor's file modifications.

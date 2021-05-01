@@ -37,7 +37,7 @@ class EditorTest extends TestCase
 
 ', '    public function {underscore}');
 
-        $this->template->ifFileExists($editor);
+        $this->template->fileEditor($editor);
 
         $generator = new FileGenerator($this->template);
 
@@ -74,7 +74,7 @@ class EditorTest extends TestCase
     }
 ');
 
-        $this->template->ifFileExists($editor);
+        $this->template->fileEditor($editor);
 
         $generator = new FileGenerator($this->template);
 
@@ -102,7 +102,7 @@ class EditorTest extends TestCase
 
         $editor->replace('{underscore}', 'bar');
 
-        $this->template->ifFileExists($editor);
+        $this->template->fileEditor($editor);
 
         $generator = new FileGenerator($this->template);
 
@@ -110,7 +110,7 @@ class EditorTest extends TestCase
 
         $fileContents = file_get_contents(__DIR__ . '/Fixtures/Foo.php');
 
-        $this->assertStringContainsString('public function bar()', $fileContents);
+        self::assertStringContainsString('public function bar()', $fileContents);
     }
 
     /** @test */
@@ -128,7 +128,7 @@ class EditorTest extends TestCase
             'before' => '    public function {underscore}',
         ]);
 
-        $this->template->ifFileExists($editor);
+        $this->template->fileEditor($editor);
 
         $generator = new FileGenerator($this->template);
 
@@ -171,7 +171,7 @@ class EditorTest extends TestCase
 '
         ]);
 
-        $this->template->ifFileExists($editor);
+        $this->template->fileEditor($editor);
 
         $generator = new FileGenerator($this->template);
 
@@ -179,7 +179,7 @@ class EditorTest extends TestCase
 
         $fileContents = file_get_contents(__DIR__ . '/Fixtures/Foo.php');
 
-        $this->assertStringContainsString('
+        self::assertStringContainsString('
     public function foo(): Foo
     {
         return $this;
@@ -197,9 +197,15 @@ class EditorTest extends TestCase
     {
         $editor = new FileEditor();
 
-        $editor->replace('{underscore}nonexistent', 'bar_test', ['replace' => '{underscore}']);
+        $editor->replace(
+            '/{underscore}nonexistent/',
+            'bar_test',
+            [
+                'replace' => '/{underscore}/'
+            ]
+        )->isRegex();
 
-        $this->template->ifFileExists($editor);
+        $this->template->fileEditor($editor);
 
         $generator = new FileGenerator($this->template);
 
@@ -217,7 +223,7 @@ class EditorTest extends TestCase
 
         $editor->replace('{underscore}', 'bar')->ifNotContaining('{underscore}');
 
-        $this->template->ifFileExists($editor);
+        $this->template->fileEditor($editor);
 
         $generator = new FileGenerator($this->template);
 
@@ -226,5 +232,23 @@ class EditorTest extends TestCase
         $fileContents = file_get_contents(__DIR__ . '/Fixtures/Foo.php');
 
         $this->assertStringNotContainsString('bar', $fileContents);
+    }
+
+    /** @test */
+    public function can_replace_regex(): void
+    {
+        $editor = new FileEditor();
+
+        $editor->replace('/regex_string/', 'isRegex')->isRegex();
+
+        $this->template->fileEditor($editor);
+
+        $generator = new FileGenerator($this->template);
+
+        $generator->create();
+
+        $fileContents = file_get_contents(__DIR__ . '/Fixtures/Foo.php');
+
+        $this->assertStringContainsString('$isRegex = true;', $fileContents);
     }
 }

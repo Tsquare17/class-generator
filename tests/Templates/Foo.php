@@ -34,6 +34,8 @@ namespace Fixtures;
 
 class {name}
 {
+    protected bool $regex_string = true;
+
     public function {underscore}(): {name}
     {
         return $this;

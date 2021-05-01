@@ -89,6 +89,7 @@ class FileEditor implements Editor
             'search' => $search,
             'replace' => $replace,
             'or' => $or,
+            'regex' => false,
         ];
 
         return $this;
@@ -105,6 +106,19 @@ class FileEditor implements Editor
     {
         $index = count($this->replacements) - 1;
         $this->replacements[$index]['not'] = $string;
+
+        return $this;
+    }
+
+    /**
+     * Specify that the search string is a regular expression.
+     *
+     * @return FileEditor
+     */
+    public function isRegex(): FileEditor
+    {
+        $index = count($this->replacements) - 1;
+        $this->replacements[$index]['regex'] = true;
 
         return $this;
     }
@@ -128,7 +142,17 @@ class FileEditor implements Editor
                 continue;
             }
 
-            if (strpos($this->file, Strings::fillPlaceholders($replacement['search'], $name))) {
+            if ($replacement['regex']) {
+                $matched = preg_match($replacement['search'], $this->file, $match);
+                if ($matched) {
+                    $this->file = str_replace(
+                        Strings::fillPlaceholders($match[0], $name),
+                        Strings::fillPlaceholders($replacement['replace'], $name),
+                        $this->file
+                    );
+                    $conditionMet = true;
+                }
+            } elseif (strpos($this->file, Strings::fillPlaceholders($replacement['search'], $name))) {
                 $this->file = str_replace(
                     Strings::fillPlaceholders($replacement['search'], $name),
                     Strings::fillPlaceholders($replacement['replace'], $name),
@@ -143,25 +167,37 @@ class FileEditor implements Editor
                         continue;
                     }
 
-                    if (strpos($this->file, Strings::fillPlaceholders($text, $name))) {
-                        $replacementText = null;
-                        if ($condition === 'before') {
-                            $replacementText = $replacement['replace'] . $text;
-                        } elseif ($condition === 'after') {
-                            $replacementText = $text . $replacement['replace'];
-                        } elseif ($condition === 'replace') {
-                            $replacementText = $replacement['replace'];
-                        }
+                    $replacementText = null;
+                    if ($condition === 'before') {
+                        $replacementText = $replacement['replace'] . $text;
+                    } elseif ($condition === 'after') {
+                        $replacementText = $text . $replacement['replace'];
+                    } elseif ($condition === 'replace') {
+                        $replacementText = $replacement['replace'];
+                    }
 
-                        if (!$replacementText) {
-                            continue;
-                        }
+                    if (!$replacementText) {
+                        continue;
+                    }
 
+                    if ($replacement['regex']) {
+                        $matched = preg_match(Strings::fillPlaceholders($text, $name), $this->file, $match);
+                        if ($matched) {
+                            $this->file = str_replace(
+                                Strings::fillPlaceholders($match[0], $name),
+                                Strings::fillPlaceholders($replacementText, $name),
+                                $this->file
+                            );
+
+                            $conditionMet = true;
+                        }
+                    } elseif (strpos($this->file, Strings::fillPlaceholders($text, $name))) {
                         $this->file = str_replace(
                             Strings::fillPlaceholders($text, $name),
                             Strings::fillPlaceholders($replacementText, $name),
                             $this->file
                         );
+
                         $conditionMet = true;
                     }
                 }

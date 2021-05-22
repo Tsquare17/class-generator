@@ -38,15 +38,17 @@ $template->name('Example');
 
 
 /**
- * Define the file name. If not defined, name will be used.
+ * Define the file name.
  */
-$template->fileName('{name}File');
+$template->fileName('{name}File.php');
 
 
 /**
  * Define the contents of the file.
  */
 $template->fileContent(<<<'FILE'
+<?php
+
 namespace App\Foo\{name};
 
 $foo = '{underscore}';
@@ -81,6 +83,11 @@ function another{pascal}Function()  {
 ');
 
 $editor->replace('another{pascal}Function', 'someOther{pascal}Function');
+
+/**
+ * FileEditor will use regular expressions, if the isRegex() method is called after an action.
+ */
+$editor->replace('/^foo/', 'bar')->isRegex();
 
 $template->ifFileExists($editor);
 ```

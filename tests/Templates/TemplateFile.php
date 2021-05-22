@@ -20,6 +20,12 @@ $template->destinationPath('/Templates/Destination');
 
 
 /**
+ * Set the file name.
+ */
+$template->fileName('TestFile.php');
+
+
+/**
  * Define the name used to fill placeholders.
  */
 $template->name('TestFile');
@@ -29,6 +35,8 @@ $template->name('TestFile');
  * Define the contents of the file.
  */
 $template->fileContent(<<<'FILE'
+<?php
+
 $foo = '{name}';
 $bar = '{camel}';
 $baz = '{pascal}';

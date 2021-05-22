@@ -12,6 +12,7 @@ class FileGenerator
 {
     protected Template $template;
     protected ?string $fileName = null;
+    protected string $fileExtension;
     protected string $name;
     protected string $path;
     protected string $fileContents;
@@ -33,6 +34,9 @@ class FileGenerator
      */
     public function create(): bool
     {
+        // Get the file extension.
+        $this->getFileExtension();
+
         // Get the name of the file.
         $this->getFileName();
 
@@ -54,9 +58,15 @@ class FileGenerator
      */
     public function getFileName(): void
     {
-        if ($fileName = $this->template->getFileName()) {
-            $this->fileName = $this->fillPlaceholders($this->template->getFileName(), $this->template->getName());
+        if ($fileName = str_replace($this->fileExtension, '', $this->template->getFileName())) {
+            $this->fileName = $this->fillPlaceholders($fileName, $this->template->getName());
         }
+    }
+
+    public function getFileExtension(): void
+    {
+        $offset = strrpos($this->template->getFileName(), ".");
+        $this->fileExtension = substr($this->template->getFileName(), $offset);
     }
 
     /**
@@ -95,12 +105,10 @@ class FileGenerator
             return;
         }
 
-        $this->fileContents = '<?php'
-                              . PHP_EOL
-                              . $this->fillPlaceholders(
-                                  $this->template->getFileContent(),
-                                  $this->template->getName()
-                              );
+        $this->fileContents = $this->fillPlaceholders(
+            $this->template->getFileContent(),
+            $this->template->getName()
+        );
     }
 
     /**
@@ -111,7 +119,7 @@ class FileGenerator
     protected function generateFile(): bool
     {
         $fileName = $this->fileName ?: $this->name;
-        $filePath = $this->path . '/' . $fileName . '.php';
+        $filePath = $this->path . '/' . $fileName . $this->fileExtension;
 
         if ($edited = $this->template->executeFileEdits($this->getPathString())) {
             return $edited;

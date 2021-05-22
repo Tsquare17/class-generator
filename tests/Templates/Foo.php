@@ -18,6 +18,10 @@ $template->appBasePath(dirname(__DIR__, 1));
  */
 $template->destinationPath('/Fixtures');
 
+/**
+ * Set the file name.
+ */
+$template->fileName('Foo.php');
 
 /**
  * Define the name used to fill placeholders.

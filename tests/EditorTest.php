@@ -8,14 +8,17 @@ use Tsquare\FileGenerator\Template;
 
 class EditorTest extends TestCase
 {
-    protected Template $template;
+    /**
+     * @var FileTemplate
+     */
+    protected $template;
 
-    public function setUp(): void
+    public function setUp()
     {
         $this->template = FileTemplate::init(__DIR__ . '/Templates/Foo.php');
     }
 
-    public function tearDown(): void
+    public function tearDown()
     {
         unlink(__DIR__ . '/Fixtures/Foo.php');
 
@@ -27,7 +30,7 @@ class EditorTest extends TestCase
     }
 
     /** @test */
-    public function can_insert_before(): void
+    public function can_insert_before()
     {
         $editor = new FileEditor();
 
@@ -47,7 +50,7 @@ class EditorTest extends TestCase
 
         $fileContents = file_get_contents(__DIR__ . '/Fixtures/Foo.php');
 
-        self::assertStringContainsString('
+        $this->assertContains('
     public function getFoo(): Foo
     {
         return $this;
@@ -61,7 +64,7 @@ class EditorTest extends TestCase
     }
 
     /** @test */
-    public function can_insert_after(): void
+    public function can_insert_after()
     {
         $editor = new FileEditor();
 
@@ -84,7 +87,7 @@ class EditorTest extends TestCase
 
         $fileContents = file_get_contents(__DIR__ . '/Fixtures/Foo.php');
 
-        self::assertStringContainsString('
+        $this->assertContains('
     public function foo(): Foo
     {
         return $this;
@@ -98,7 +101,7 @@ class EditorTest extends TestCase
     }
 
     /** @test */
-    public function can_replace_text(): void
+    public function can_replace_text()
     {
         $editor = new FileEditor();
 
@@ -112,11 +115,11 @@ class EditorTest extends TestCase
 
         $fileContents = file_get_contents(__DIR__ . '/Fixtures/Foo.php');
 
-        self::assertStringContainsString('public function bar()', $fileContents);
+        $this->assertContains('public function bar()', $fileContents);
     }
 
     /** @test */
-    public function can_insert_before_text_or_other_text(): void
+    public function can_insert_before_text_or_other_text()
     {
         $editor = new FileEditor();
 
@@ -138,7 +141,7 @@ class EditorTest extends TestCase
 
         $fileContents = file_get_contents(__DIR__ . '/Fixtures/Foo.php');
 
-        self::assertStringContainsString('
+        $this->assertContains('
     public function getFoo(): Foo
     {
         return $this;
@@ -152,7 +155,7 @@ class EditorTest extends TestCase
     }
 
     /** @test */
-    public function can_insert_after_text_or_other_text(): void
+    public function can_insert_after_text_or_other_text()
     {
         $editor = new FileEditor();
 
@@ -181,7 +184,7 @@ class EditorTest extends TestCase
 
         $fileContents = file_get_contents(__DIR__ . '/Fixtures/Foo.php');
 
-        self::assertStringContainsString('
+        $this->assertContains('
     public function foo(): Foo
     {
         return $this;
@@ -195,7 +198,7 @@ class EditorTest extends TestCase
     }
 
     /** @test */
-    public function can_replace_text_or_other_text(): void
+    public function can_replace_text_or_other_text()
     {
         $editor = new FileEditor();
 
@@ -215,11 +218,11 @@ class EditorTest extends TestCase
 
         $fileContents = file_get_contents(__DIR__ . '/Fixtures/Foo.php');
 
-        self::assertStringContainsString('public function bar_test()', $fileContents);
+        $this->assertContains('public function bar_test()', $fileContents);
     }
 
     /** @test */
-    public function doesnt_insert_if_contains_string_in_if_not_contains(): void
+    public function doesnt_insert_if_contains_string_in_if_not_contains()
     {
         $editor = new FileEditor();
 
@@ -233,11 +236,11 @@ class EditorTest extends TestCase
 
         $fileContents = file_get_contents(__DIR__ . '/Fixtures/Foo.php');
 
-        self::assertStringNotContainsString('bar', $fileContents);
+        $this->assertNotContains('bar', $fileContents);
     }
 
     /** @test */
-    public function doesnt_insert_if_contains_regex_in_if_not_contains(): void
+    public function doesnt_insert_if_contains_regex_in_if_not_contains()
     {
         $editor = new FileEditor();
 
@@ -251,11 +254,11 @@ class EditorTest extends TestCase
 
         $fileContents = file_get_contents(__DIR__ . '/Fixtures/Foo.php');
 
-        self::assertStringNotContainsString('bar', $fileContents);
+        $this->assertNotContains('bar', $fileContents);
     }
 
     /** @test */
-    public function does_insert_if_doesnt_contain_regex_in_if_not_contains(): void
+    public function does_insert_if_doesnt_contain_regex_in_if_not_contains()
     {
         $editor = new FileEditor();
 
@@ -269,11 +272,11 @@ class EditorTest extends TestCase
 
         $fileContents = file_get_contents(__DIR__ . '/Fixtures/Foo.php');
 
-        self::assertStringContainsString('bar', $fileContents);
+        $this->assertContains('bar', $fileContents);
     }
 
     /** @test */
-    public function can_replace_regex(): void
+    public function can_replace_regex()
     {
         $editor = new FileEditor();
 
@@ -287,6 +290,6 @@ class EditorTest extends TestCase
 
         $fileContents = file_get_contents(__DIR__ . '/Fixtures/Foo.php');
 
-        self::assertStringContainsString('$isRegex = true;', $fileContents);
+        $this->assertContains('$isRegex = true;', $fileContents);
     }
 }

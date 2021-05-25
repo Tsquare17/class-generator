@@ -18,10 +18,12 @@ $template->appBasePath(dirname(__DIR__, 1));
  */
 $template->destinationPath('/Fixtures');
 
+
 /**
  * Set the file name.
  */
 $template->fileName('Foo.php');
+
 
 /**
  * Define the name used to fill placeholders.
@@ -32,17 +34,20 @@ $template->name('Foo');
 /**
  * Define the contents of the file.
  */
-$template->fileContent(<<<'FILE'
+$template->fileContent(
+    <<<'FILE'
+<?php
 
 namespace Fixtures;
 
 class {name}
 {
-    protected bool $regex_string = true;
+    protected $regex_string = true;
 
     public function {underscore}(): {name}
     {
         return $this;
     }
 }
-FILE);
+FILE
+);

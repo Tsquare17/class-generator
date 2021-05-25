@@ -2,11 +2,13 @@
 
 namespace Tsquare\FileGenerator\Exceptions;
 
+use RuntimeException;
+
 /**
  * Class FileNotFoundException
  * @package Tsquare\FileGenerator\Exceptions
  */
-class FileNotFoundException extends \RuntimeException
+class FileNotFoundException extends RuntimeException
 {
     /**
      * FileNotFoundException constructor.

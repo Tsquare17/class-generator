@@ -34,7 +34,8 @@ $template->name('TestFile');
 /**
  * Define the contents of the file.
  */
-$template->fileContent(<<<'FILE'
+$template->fileContent(
+    <<<'FILE'
 <?php
 
 $foo = '{name}';
@@ -46,7 +47,8 @@ $quuz = '{name:plural}';
 $customToken = '{foo_token}';
 $quuuz = '{title}';
 $quuuuz = '{underscore:plural:upper}';
-FILE);
+FILE
+);
 
 
 /**

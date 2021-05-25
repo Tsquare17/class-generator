@@ -10,12 +10,35 @@ use Tsquare\FileGenerator\Utils\Strings;
  */
 class FileGenerator
 {
-    protected Template $template;
-    protected ?string $fileName = null;
-    protected string $fileExtension;
-    protected string $name;
-    protected string $path;
-    protected string $fileContents;
+    /**
+     * @var Template
+     */
+    protected $template;
+
+    /**
+     * @var string|null
+     */
+    protected $fileName = null;
+
+    /**
+     * @var string
+     */
+    protected $fileExtension;
+
+    /**
+     * @var string
+     */
+    protected $name;
+
+    /**
+     * @var string
+     */
+    protected $path;
+
+    /**
+     * @var string
+     */
+    protected $fileContents;
 
     /**
      * FileGenerator constructor.
@@ -55,15 +78,22 @@ class FileGenerator
 
     /**
      * Get the name of the file.
+     *
+     * @return void
      */
-    public function getFileName(): void
+    public function getFileName()
     {
         if ($fileName = str_replace($this->fileExtension, '', $this->template->getFileName())) {
             $this->fileName = $this->fillPlaceholders($fileName, $this->template->getName());
         }
     }
 
-    public function getFileExtension(): void
+    /**
+     * Get the file extension.
+     *
+     * @return void
+     */
+    public function getFileExtension()
     {
         $offset = strrpos($this->template->getFileName(), ".");
         $this->fileExtension = substr($this->template->getFileName(), $offset);
@@ -71,8 +101,10 @@ class FileGenerator
 
     /**
      * Get the name.
+     *
+     * @return void
      */
-    public function getName(): void
+    public function getName()
     {
         $this->name = $this->template->getName();
     }
@@ -98,8 +130,10 @@ class FileGenerator
 
     /**
      * Set the contents of the file.
+     *
+     * @return void
      */
-    protected function setContents(): void
+    protected function setContents()
     {
         if (!$this->template->getFileContent()) {
             return;

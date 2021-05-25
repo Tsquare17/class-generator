@@ -8,23 +8,54 @@ namespace Tsquare\FileGenerator;
  */
 class FileTemplate implements Template
 {
-    protected ?string $fileName = null;
-    protected string $name;
-    protected ?string $title = null;
-    protected ?string $appBasePath = null;
-    protected string $destinationPath;
-    protected ?string $fileContent = null;
-    protected Editor $editor;
-    protected array $customTokens = [];
+    /**
+     * @var string|null
+     */
+    protected $fileName = null;
+
+    /**
+     * @var string
+     */
+    protected $name;
+
+    /**
+     * @var string|null
+     */
+    protected $title = null;
+
+    /**
+     * @var string|null
+     */
+    protected $appBasePath = null;
+
+    /**
+     * @var string
+     */
+    protected $destinationPath;
+
+    /**
+     * @var string|null
+     */
+    protected $fileContent = null;
+
+    /**
+     * @var Editor
+     */
+    protected $editor;
+
+    /**
+     * @var array
+     */
+    protected $customTokens = [];
 
     /**
      * Initialize FileTemplate, pulling in the specified template file.
      *
      * @param string $templateFile
      *
-     * @return FileTemplate
+     * @return Template
      */
-    public static function init(string $templateFile): FileTemplate
+    public static function init(string $templateFile): Template
     {
         $template = new static();
 
@@ -38,9 +69,9 @@ class FileTemplate implements Template
      *
      * @param string $fileName
      *
-     * @return FileTemplate
+     * @return Template
      */
-    public function fileName(string $fileName): FileTemplate
+    public function fileName(string $fileName): Template
     {
         $this->fileName = $fileName;
 
@@ -52,7 +83,7 @@ class FileTemplate implements Template
      *
      * @return string|null
      */
-    public function getFileName(): ?string
+    public function getFileName()
     {
         return $this->fileName;
     }
@@ -62,9 +93,9 @@ class FileTemplate implements Template
      *
      * @param string $name
      *
-     * @return FileTemplate
+     * @return Template
      */
-    public function name(string $name): FileTemplate
+    public function name(string $name): Template
     {
         $this->name = $name;
 
@@ -86,9 +117,9 @@ class FileTemplate implements Template
      *
      * @param string $path
      *
-     * @return FileTemplate
+     * @return Template
      */
-    public function appBasePath(string $path): FileTemplate
+    public function appBasePath(string $path): Template
     {
         $this->appBasePath = $path;
 
@@ -100,7 +131,7 @@ class FileTemplate implements Template
      *
      * @return string|null
      */
-    public function getAppBasePath(): ?string
+    public function getAppBasePath()
     {
         return $this->appBasePath;
     }
@@ -110,9 +141,9 @@ class FileTemplate implements Template
      *
      * @param string $path
      *
-     * @return FileTemplate
+     * @return Template
      */
-    public function destinationPath(string $path): FileTemplate
+    public function destinationPath(string $path): Template
     {
         $this->destinationPath = $path;
 
@@ -134,9 +165,9 @@ class FileTemplate implements Template
      *
      * @param string $fileContent
      *
-     * @return FileTemplate
+     * @return Template
      */
-    public function fileContent(string $fileContent): FileTemplate
+    public function fileContent(string $fileContent): Template
     {
         $this->fileContent = $fileContent;
 
@@ -148,7 +179,7 @@ class FileTemplate implements Template
      *
      * @return string|null
      */
-    public function getFileContent(): ?string
+    public function getFileContent()
     {
         return $this->fileContent;
     }
@@ -158,9 +189,9 @@ class FileTemplate implements Template
      *
      * @param Editor $editor
      *
-     * @return FileTemplate
+     * @return Template
      */
-    public function fileEditor(Editor $editor): FileTemplate
+    public function fileEditor(Editor $editor): Template
     {
         $this->editor = $editor;
 
@@ -192,9 +223,9 @@ class FileTemplate implements Template
      * @param string $token
      * @param callable $value
      *
-     * @return FileTemplate
+     * @return Template
      */
-    public function addReplacementToken(string $token, callable $value): FileTemplate
+    public function addReplacementToken(string $token, callable $value): Template
     {
         $this->customTokens[$token] = $value;
 

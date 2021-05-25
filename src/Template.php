@@ -31,7 +31,7 @@ interface Template
      *
      * @return string|null
      */
-    public function getFileName(): ?string;
+    public function getFileName();
 
     /**
      * Set the name.
@@ -63,7 +63,7 @@ interface Template
      *
      * @return string
      */
-    public function getAppBasePath(): ?string;
+    public function getAppBasePath();
 
     /**
      * Set the destination path for the generated file.
@@ -95,7 +95,7 @@ interface Template
      *
      * @return string|null
      */
-    public function getFileContent(): ?string;
+    public function getFileContent();
 
     /**
      * Sets an Editor to use, in the event that the file already exists.
@@ -121,9 +121,9 @@ interface Template
      * @param string $token
      * @param callable $value
      *
-     * @return FileTemplate
+     * @return Template
      */
-    public function addReplacementToken(string $token, callable $value): FileTemplate;
+    public function addReplacementToken(string $token, callable $value): Template;
 
     /**
      * Get the custom replacement tokens.

@@ -46,7 +46,8 @@ $template->fileName('{name}File.php');
 /**
  * Define the contents of the file.
  */
-$template->fileContent(<<<'FILE'
+$template->fileContent(
+    <<<'FILE'
 <?php
 
 namespace App\Foo\{name};
@@ -58,7 +59,8 @@ function foo{name}() {
     return '{title}';
 }
 
-FILE);
+FILE
+);
 
 
 /*
@@ -89,7 +91,7 @@ $editor->replace('another{pascal}Function', 'someOther{pascal}Function');
  */
 $editor->replace('/^foo/', 'bar')->isRegex();
 
-$template->ifFileExists($editor);
+$template->fileEditor($editor);
 ```
 
 ##### Initialize FileTemplate with the path to the template file, pass it to FileGenerator, and call create.

@@ -11,19 +11,34 @@ use Tsquare\FileGenerator\Utils\Strings;
  */
 class FileEditor implements Editor
 {
-    protected string $file;
-    protected string $fileName;
-    protected array $replacements;
-    protected string $name;
+    /**
+     * @var string
+     */
+    protected $file;
+
+    /**
+     * @var string
+     */
+    protected $fileName;
+
+    /**
+     * @var array
+     */
+    protected $replacements;
+
+    /**
+     * @var string
+     */
+    protected $name;
 
     /**
      * Specify the file to be edited.
      *
      * @param string $file
      *
-     * @return FileEditor
+     * @return Editor
      */
-    public function file(string $file): FileEditor
+    public function file(string $file): Editor
     {
         if (!is_file($file)) {
             throw new FileNotFoundException($file);
@@ -42,9 +57,9 @@ class FileEditor implements Editor
      * @param string $before
      * @param array $or
      *
-     * @return FileEditor
+     * @return Editor
      */
-    public function insertBefore(string $insert, string $before, array $or = []): FileEditor
+    public function insertBefore(string $insert, string $before, array $or = []): Editor
     {
         if (empty($or)) {
             $this->replace($before, ltrim($insert, PHP_EOL) . $before, $or);
@@ -62,9 +77,9 @@ class FileEditor implements Editor
      * @param string $after
      * @param array  $or
      *
-     * @return FileEditor
+     * @return Editor
      */
-    public function insertAfter(string $insert, string $after, array $or = []): FileEditor
+    public function insertAfter(string $insert, string $after, array $or = []): Editor
     {
         if (empty($or)) {
             $this->replace($after, $after . $insert, $or);
@@ -82,9 +97,9 @@ class FileEditor implements Editor
      * @param string $replace
      * @param array  $or
      *
-     * @return FileEditor
+     * @return Editor
      */
-    public function replace(string $search, string $replace, array $or = []): FileEditor
+    public function replace(string $search, string $replace, array $or = []): Editor
     {
         $this->replacements[] = [
             'search' => $search,
@@ -101,9 +116,9 @@ class FileEditor implements Editor
      *
      * @param string $string
      *
-     * @return FileEditor
+     * @return Editor
      */
-    public function ifNotContaining(string $string): FileEditor
+    public function ifNotContaining(string $string): Editor
     {
         $index = count($this->replacements) - 1;
         $this->replacements[$index]['not'] = $string;
@@ -114,9 +129,9 @@ class FileEditor implements Editor
     /**
      * Specify that the search string is a regular expression.
      *
-     * @return FileEditor
+     * @return Editor
      */
-    public function isRegex(): FileEditor
+    public function isRegex(): Editor
     {
         $index = count($this->replacements) - 1;
         $this->replacements[$index]['regex'] = true;
@@ -162,6 +177,7 @@ class FileEditor implements Editor
      * Determine if the not condition string exists.
      *
      * @param array $replacement
+     *
      * @return bool
      */
     protected function matchNot(array $replacement): bool
@@ -193,6 +209,7 @@ class FileEditor implements Editor
      * @param string $search
      * @param string $replace
      * @param string $replacement
+     *
      * @return bool
      */
     protected function matchRegex(string $search, string $replace, string $replacement): bool
@@ -221,6 +238,7 @@ class FileEditor implements Editor
      * @param string $condition
      * @param string $text
      * @param array $replacement
+     *
      * @return bool
      */
     protected function matchCondition(string $condition, string $text, array $replacement): bool
@@ -248,6 +266,7 @@ class FileEditor implements Editor
      * @param string $replace
      * @param string $replacementText
      * @param bool $isRegex
+     *
      * @return bool
      */
     protected function replaceString(string $search, string $replace, string $replacementText, bool $isRegex): bool

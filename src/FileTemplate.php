@@ -49,6 +49,11 @@ class FileTemplate implements Template
     protected $customTokens = [];
 
     /**
+     * @var string
+     */
+    protected $prepend = '';
+
+    /**
      * Initialize FileTemplate, pulling in the specified template file.
      *
      * @param string $templateFile
@@ -181,7 +186,24 @@ class FileTemplate implements Template
      */
     public function getFileContent()
     {
-        return $this->fileContent;
+        return $this->prepend . $this->fileContent;
+    }
+
+
+    /**
+     * Prepend the file with a string.
+     *
+     * This can be helpful when working with an editor that will attempt to highlight the contents of the string, when
+     * including a start tag, such as <?php
+     *
+     * @param string $string
+     * @return Template
+     */
+    public function prepend(string $string): Template
+    {
+        $this->prepend = $string;
+
+        return $this;
     }
 
     /**

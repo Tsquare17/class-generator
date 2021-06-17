@@ -2,6 +2,8 @@
 
 namespace Tsquare\FileGenerator\Utils;
 
+use Tsquare\FileGenerator\TokenAction;
+
 /**
  * Class Strings
  * @package Tsquare\FileGenerator\Utils
@@ -97,50 +99,71 @@ class Strings
      *
      * @param array  $tokens
      * @param string $string
-     * @param array  $customTokens
+     * @param TokenAction[]  $customTokens
      *
      * @return string
      */
     public static function executeTokenAction(array $tokens, string $string, array $customTokens = []): string
     {
-        foreach ($tokens as $token) {
-            if ($token === 'camel') {
-                $string = lcfirst($string);
-            }
+        // order tokens...
+        $defaultTokens = self::getDefaultTokens();
 
-            if ($token === 'pascal') {
-                $string = ucfirst($string);
-            }
+        $tokenCollection = array_merge($defaultTokens, $customTokens);
 
-            if ($token === 'underscore') {
-                $string = self::pascalTo($string, '_');
-            }
+        usort($tokenCollection, static function (TokenAction $a, TokenAction $b) {
+            return $b->getOrder() <=> $a->getOrder();
+        });
 
-            if ($token === 'dash') {
-                $string = self::pascalTo($string, '-');
+        $orderedTokens = [];
+        foreach ($tokenCollection as $tokenAction) {
+            foreach ($tokens as $token) {
+                if ($token === $tokenAction->getName()) {
+                    $orderedTokens[] = $token;
+                }
             }
+        }
 
-            if ($token === 'plural') {
-                $string = self::plural($string);
-            }
-
-            if ($token === 'upper') {
-                $string = strtoupper($string);
-            }
-
-            if ($token === 'lower') {
-                $string = strtolower($string);
-            }
-
-            if ($token === 'title') {
-                $string = ucwords(self::pascalTo($string, ' '));
-            }
-
-            if (isset($customTokens[$token])) {
-                $string = $customTokens[$token]($string);
+        foreach ($orderedTokens as $token) {
+            foreach ($tokenCollection as $tokenAction) {
+                if ($token === $tokenAction->getName()) {
+                    $string = $tokenAction->getAction()($string);
+                }
             }
         }
 
         return $string;
+    }
+
+    /**
+     * @return TokenAction[]
+     */
+    protected static function getDefaultTokens()
+    {
+        return [
+            new TokenAction('camel', static function ($token) {
+                return lcfirst($token);
+            }),
+            new TokenAction('pascal', static function ($token) {
+                return ucfirst($token);
+            }),
+            new TokenAction('underscore', function ($token) {
+                return self::pascalTo($token, '_');
+            }),
+            new TokenAction('dash', function ($token) {
+                return self::pascalTo($token, '-');
+            }),
+            new TokenAction('plural', function ($token) {
+                return self::plural($token);
+            }),
+            new TokenAction('upper', static function ($token) {
+                return strtoupper($token);
+            }),
+            new TokenAction('lower', static function ($token) {
+                return strtolower($token);
+            }),
+            new TokenAction('title', static function ($token) {
+                return ucwords(self::pascalTo($token, ' '));
+            })
+        ];
     }
 }

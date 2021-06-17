@@ -84,4 +84,10 @@ class TemplateTest extends TestCase
     {
         $this->assertContains('$quuuuz = \'TEST_FILES\';', $this->fileContents);
     }
+
+    /** @test */
+    public function token_actions_execute_in_order()
+    {
+        $this->assertContains('$order = \'2\';', $this->fileContents);
+    }
 }

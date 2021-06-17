@@ -44,7 +44,7 @@ class FileTemplate implements Template
     protected $editor;
 
     /**
-     * @var array
+     * @var TokenAction[]
      */
     protected $customTokens = [];
 
@@ -220,14 +220,11 @@ class FileTemplate implements Template
     /**
      * Add custom replacement tokens.
      *
-     * @param string $token
-     * @param callable $value
-     *
      * @return Template
      */
-    public function addReplacementToken(string $token, callable $value): Template
+    public function addReplacementToken(TokenAction $tokenAction): Template
     {
-        $this->customTokens[$token] = $value;
+        $this->customTokens[] = $tokenAction;
 
         return $this;
     }

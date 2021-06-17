@@ -118,17 +118,14 @@ interface Template
     /**
      * Add custom replacement tokens.
      *
-     * @param string $token
-     * @param callable $value
-     *
      * @return Template
      */
-    public function addReplacementToken(string $token, callable $value): Template;
+    public function addReplacementToken(TokenAction $token): Template;
 
     /**
      * Get the custom replacement tokens.
      *
-     * @return array
+     * @return TokenAction[]
      */
     public function getReplacementTokens(): array;
 }

@@ -1,6 +1,7 @@
 <?php
 
 use Tsquare\FileGenerator\FileTemplate;
+use Tsquare\FileGenerator\TokenAction;
 
 /**
  * @var FileTemplate $template
@@ -47,6 +48,7 @@ $quuz = '{name:plural}';
 $customToken = '{foo_token}';
 $quuuz = '{title}';
 $quuuuz = '{underscore:plural:upper}';
+$order = '{order_test_one:order_test_two:order_test_three}';
 FILE
 );
 
@@ -54,6 +56,18 @@ FILE
 /**
  * Add a custom replacement token.
  */
-$template->addReplacementToken('foo_token', function ($name) {
+$template->addReplacementToken(new TokenAction('foo_token', function ($name) {
     return 'foo_value';
-});
+}));
+
+$template->addReplacementToken(new TokenAction('order_test_three', function ($name) {
+    return '3';
+}, 10));
+
+$template->addReplacementToken(new TokenAction('order_test_two', function ($name) {
+    return '2';
+}, 1));
+
+$template->addReplacementToken(new TokenAction('order_test_one', function ($name) {
+    return '1';
+}, 19));

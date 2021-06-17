@@ -33,12 +33,15 @@ $template->name('TestFile');
 
 
 /**
+ * Prepend the file contents.
+ */
+$template->prepend('<?php' . PHP_EOL . PHP_EOL);
+
+/**
  * Define the contents of the file.
  */
 $template->fileContent(
     <<<'FILE'
-<?php
-
 $foo = '{name}';
 $bar = '{camel}';
 $baz = '{pascal}';

@@ -32,6 +32,11 @@ class FileEditor implements Editor
     protected $name;
 
     /**
+     * @var string
+     */
+    protected $prepend = '';
+
+    /**
      * Specify the file to be edited.
      *
      * @param string $file
@@ -162,7 +167,7 @@ class FileEditor implements Editor
             if ($conditionMet === false && !empty($replacement['or'])) {
                 foreach ($replacement['or'] as $condition => $text) {
                     if ($conditionMet === true) {
-                        continue;
+                        break;
                     }
 
                     $conditionMet = $this->matchCondition($condition, $text, $replacement);

@@ -48,7 +48,6 @@ $template->fileName('{name}File.php');
  */
 $template->fileContent(
     <<<'FILE'
-<?php
 
 namespace App\Foo\{name};
 
@@ -61,6 +60,9 @@ function foo{name}() {
 
 FILE
 );
+
+// Optionally, you can prepend the PHP start tag to avoid unwanted editor highlighting.
+$template->prepend('<?php' . PHP_EOL);
 
 
 /*

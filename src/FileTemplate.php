@@ -189,7 +189,6 @@ class FileTemplate implements Template
         return $this->prepend . $this->fileContent;
     }
 
-
     /**
      * Prepend the file with a string.
      *
@@ -235,13 +234,13 @@ class FileTemplate implements Template
 
         $this->editor->file($file);
 
-
-        return $this->editor->execute($this->name);
+        return $this->editor->execute($this->name, $this->customTokens);
     }
 
     /**
      * Add custom replacement tokens.
      *
+     * @param TokenAction $tokenAction
      * @return Template
      */
     public function addReplacementToken(TokenAction $tokenAction): Template

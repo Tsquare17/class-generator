@@ -54,8 +54,9 @@ interface Editor
      * Execute file edits.
      *
      * @param string $name
+     * @param array $customTokens
      *
      * @return bool
      */
-    public function execute(string $name): bool;
+    public function execute(string $name, array $customTokens = []): bool;
 }

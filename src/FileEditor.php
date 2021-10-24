@@ -37,6 +37,11 @@ class FileEditor implements Editor
     protected $prepend = '';
 
     /**
+     * @var array
+     */
+    protected $customTokens = [];
+
+    /**
      * Specify the file to be edited.
      *
      * @param string $file
@@ -148,19 +153,22 @@ class FileEditor implements Editor
      * Execute file edits.
      *
      * @param string $name
+     * @param array $customTokens
      *
      * @return bool
      */
-    public function execute(string $name): bool
+    public function execute(string $name, array $customTokens = []): bool
     {
         $this->name = $name;
+
+        $this->customTokens = $customTokens;
 
         foreach ($this->replacements as $replacement) {
             if ($this->matchNot($replacement)) {
                 continue;
             }
 
-            $search = Strings::fillPlaceholders($replacement['search'], $name);
+            $search = Strings::fillPlaceholders($replacement['search'], $name, $this->customTokens);
 
             $conditionMet = $this->replaceString($search, $search, $replacement['replace'], $replacement['regex']);
 
@@ -220,15 +228,15 @@ class FileEditor implements Editor
     protected function matchRegex(string $search, string $replace, string $replacement): bool
     {
         $matched = preg_match(
-            Strings::fillPlaceholders($search, $this->name),
+            Strings::fillPlaceholders($search, $this->name, $this->customTokens),
             $this->file,
             $match
         );
         if ($matched) {
             $replacementText = str_replace($replace, $match[0], $replacement);
             $this->file = str_replace(
-                Strings::fillPlaceholders($match[0], $this->name),
-                Strings::fillPlaceholders($replacementText, $this->name),
+                Strings::fillPlaceholders($match[0], $this->name, $this->customTokens),
+                Strings::fillPlaceholders($replacementText, $this->name, $this->customTokens),
                 $this->file
             );
             return true;
@@ -280,10 +288,10 @@ class FileEditor implements Editor
             if ($this->matchRegex($search, $replace, $replacementText)) {
                 return true;
             }
-        } elseif (strpos($this->file, Strings::fillPlaceholders($search, $this->name))) {
+        } elseif (strpos($this->file, Strings::fillPlaceholders($search, $this->name, $this->customTokens))) {
             $this->file = str_replace(
-                Strings::fillPlaceholders($search, $this->name),
-                Strings::fillPlaceholders($replacementText, $this->name),
+                Strings::fillPlaceholders($search, $this->name, $this->customTokens),
+                Strings::fillPlaceholders($replacementText, $this->name, $this->customTokens),
                 $this->file
             );
 

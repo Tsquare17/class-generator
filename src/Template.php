@@ -118,9 +118,10 @@ interface Template
     /**
      * Add custom replacement tokens.
      *
+     * @param TokenAction $tokenAction
      * @return Template
      */
-    public function addReplacementToken(TokenAction $token): Template;
+    public function addReplacementToken(TokenAction $tokenAction): Template;
 
     /**
      * Get the custom replacement tokens.

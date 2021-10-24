@@ -4,7 +4,7 @@ use PHPUnit\Framework\TestCase;
 use Tsquare\FileGenerator\FileEditor;
 use Tsquare\FileGenerator\FileGenerator;
 use Tsquare\FileGenerator\FileTemplate;
-use Tsquare\FileGenerator\Template;
+use Tsquare\FileGenerator\TokenAction;
 
 class EditorTest extends TestCase
 {
@@ -23,6 +23,14 @@ class EditorTest extends TestCase
         unlink(__DIR__ . '/Fixtures/Foo.php');
 
         $template = FileTemplate::init(__DIR__ . '/Templates/Foo.php');
+
+        $generator = new FileGenerator($template);
+
+        $generator->create();
+
+        unlink(__DIR__ . '/Fixtures/OnlyEdit.php');
+
+        $template = FileTemplate::init(__DIR__ . '/Templates/RebuildOnlyEdit.php');
 
         $generator = new FileGenerator($template);
 
@@ -291,5 +299,23 @@ class EditorTest extends TestCase
         $fileContents = file_get_contents(__DIR__ . '/Fixtures/Foo.php');
 
         $this->assertContains('$isRegex = true;', $fileContents);
+    }
+
+    /** @test */
+    public function can_use_custom_token()
+    {
+        $template = FileTemplate::init(__DIR__ . '/Templates/EditorFile.php');
+
+        $template->addReplacementToken(new TokenAction('custom', static function ($name) {
+            return 'custom-token';
+        }));
+
+        $generator = new FileGenerator($template);
+
+        $generator->create();
+
+        $fileContents = file_get_contents(__DIR__ . '/Fixtures/OnlyEdit.php');
+
+        $this->assertContains('$custom = \'custom-token\';', $fileContents);
     }
 }

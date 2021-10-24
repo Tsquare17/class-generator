@@ -97,6 +97,29 @@ class Strings
     }
 
     /**
+     * Get the singular form of a word.
+     *
+     * @param string $string
+     *
+     * @return string
+     */
+    public static function singular(string $string)
+    {
+        $reverse = strrev($string);
+        $last = $reverse[0];
+
+        if (strpos($reverse, 'sie') === 0) {
+            return rtrim($string, 'ies');
+        }
+
+        if ($last === 's') {
+            return rtrim($string, 's');
+        }
+
+        return $string;
+    }
+
+    /**
      * Get all tokens in a string.
      *
      * @param string $string
@@ -162,14 +185,17 @@ class Strings
             new TokenAction('pascal', static function ($token) {
                 return self::toPascal($token);
             }),
-            new TokenAction('underscore', function ($token) {
+            new TokenAction('underscore', static function ($token) {
                 return self::pascalTo($token, '_');
             }),
-            new TokenAction('dash', function ($token) {
+            new TokenAction('dash', static function ($token) {
                 return self::pascalTo($token, '-');
             }),
-            new TokenAction('plural', function ($token) {
+            new TokenAction('plural', static function ($token) {
                 return self::plural($token);
+            }),
+            new TokenAction('singular', static function ($token) {
+                return self::singular($token);
             }),
             new TokenAction('upper', static function ($token) {
                 return strtoupper($token);

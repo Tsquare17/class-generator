@@ -117,6 +117,9 @@ $generator->create();
 {pascal}      : ExampleName
 {underscore}  : example_name
 {dash}        : example-name
-{name:plural} : ExampleNames
+{plural}      : ExampleNames
+{singular}    : ExampleName
+{upper}       : EXAMPLENAME
+{lower}       : examplename
 {title}       : Example Name
 ```

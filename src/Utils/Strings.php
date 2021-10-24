@@ -89,6 +89,10 @@ class Strings
             return rtrim($string, 'y') . 'ies';
         }
 
+        if ($last === 's') {
+            return $string;
+        }
+
         return $string . 's';
     }
 

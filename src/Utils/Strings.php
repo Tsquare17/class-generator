@@ -52,6 +52,18 @@ class Strings
     }
 
     /**
+     * Convert a string to PascalCase.
+     *
+     * @param string $string
+     *
+     * @return string
+     */
+    public static function toPascal(string $string): string
+    {
+        return str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $string)));
+    }
+
+    /**
      * Get the plural form of a word.
      *
      * @param string $string
@@ -111,7 +123,7 @@ class Strings
         $tokenCollection = array_merge($defaultTokens, $customTokens);
 
         usort($tokenCollection, static function (TokenAction $a, TokenAction $b) {
-            return $b->getOrder() <=> $a->getOrder();
+            return $b->getPriority() <=> $a->getPriority();
         });
 
         $orderedTokens = [];
@@ -141,10 +153,10 @@ class Strings
     {
         return [
             new TokenAction('camel', static function ($token) {
-                return lcfirst($token);
+                return lcfirst(self::toPascal($token));
             }),
             new TokenAction('pascal', static function ($token) {
-                return ucfirst($token);
+                return self::toPascal($token);
             }),
             new TokenAction('underscore', function ($token) {
                 return self::pascalTo($token, '_');

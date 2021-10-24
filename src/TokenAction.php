@@ -19,22 +19,22 @@ class TokenAction
     protected $action;
 
     /**
-     * @var int Token order.
+     * @var int Token priority.
      */
-    protected $order;
+    protected $priority;
 
     /**
      * Token constructor.
      *
      * @param string $name
      * @param callable $action
-     * @param int $order
+     * @param int $priority
      */
-    public function __construct(string $name, callable $action, int $order = 10)
+    public function __construct(string $name, callable $action, int $priority = 10)
     {
         $this->name = $name;
         $this->action = $action;
-        $this->order = $order;
+        $this->priority = $priority;
     }
 
     /**
@@ -56,8 +56,8 @@ class TokenAction
     /**
      * @return int
      */
-    public function getOrder(): int
+    public function getPriority(): int
     {
-        return $this->order;
+        return $this->priority;
     }
 }

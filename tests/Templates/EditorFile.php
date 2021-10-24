@@ -37,7 +37,7 @@ $editor = new FileEditor();
 $editor->insertAfter(
     <<<'FILE'
 
-        $custom = '{custom}';
+        $custom = '{custom:pascal}';
 FILE
     , '/\$test.+test.+;/'
 )->ifNotContaining('/something-non-existent/')

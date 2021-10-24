@@ -308,7 +308,7 @@ class EditorTest extends TestCase
 
         $template->addReplacementToken(new TokenAction('custom', static function ($name) {
             return 'custom-token';
-        }));
+        }, 15));
 
         $generator = new FileGenerator($template);
 
@@ -316,6 +316,6 @@ class EditorTest extends TestCase
 
         $fileContents = file_get_contents(__DIR__ . '/Fixtures/OnlyEdit.php');
 
-        $this->assertContains('$custom = \'custom-token\';', $fileContents);
+        $this->assertContains('$custom = \'CustomToken\';', $fileContents);
     }
 }
